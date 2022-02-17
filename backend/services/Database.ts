@@ -30,7 +30,7 @@ export class DatabaseService {
 	}
 
 	async initDatabase() {
-		await this.db.sync();
+		// await this.db.sync();
 		if (!(await Vendor.count())) {
 			await Vendor.addVendors();
 		}
