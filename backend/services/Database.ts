@@ -2,7 +2,7 @@ import { Database, MySQLConnector } from "https://deno.land/x/denodb/mod.ts";
 import {
 	Vendor,
 	Brand,
-	Product_Category,
+	Category,
 	Vendor_Category,
 	Config,
 	Product,
@@ -27,23 +27,16 @@ export class DatabaseService {
 
 		this.db = new Database(connector);
 
-		this.db.link([
-			Vendor,
-			Brand,
-			Product_Category,
-			Vendor_Category,
-			Config,
-			Product,
-		]);
+		this.db.link([Vendor, Brand, Category, Vendor_Category, Config, Product]);
 	}
 
 	async initDatabase() {
-		// await this.db.sync();
+		await this.db.sync();
 		if (!(await Vendor.count())) {
 			await Vendor.addVendors();
 		}
-		if (!(await Product_Category.count())) {
-			await Product_Category.addProductCategory();
+		if (!(await Category.count())) {
+			await Category.addProductCategory();
 		}
 	}
 
