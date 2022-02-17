@@ -1,4 +1,4 @@
-import { Router } from "https://deno.land/x/oak/mod.ts";
+import { Router, Status } from "https://deno.land/x/oak/mod.ts";
 import configController from "../controllers/config.ts";
 
 const router = new Router();
@@ -6,8 +6,10 @@ const router = new Router();
 router
 	.get("/config", async (context) => {
 		try {
-			context.response.body = await configController.getAllConfigs();
-			context.response.status = 200;
+			const configs = await configController.getAllConfigs();
+			context.response.body = { length: configs.length, data: configs };
+			context.response.type = "json";
+			context.response.status = Status.OK;
 		} catch (error) {
 			context.response.status = 500;
 			context.response.body = JSON.stringify(
