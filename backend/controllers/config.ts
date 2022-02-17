@@ -1,4 +1,5 @@
 import { Config } from "../db/Models.ts";
+import { IConfig } from "../interfaces/database.ts";
 
 export default {
 	async createConfig(config: IConfig) {
