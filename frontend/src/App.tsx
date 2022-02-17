@@ -3,10 +3,6 @@ import logo from "./logo.svg";
 import "./App.css";
 
 class App extends React.Component {
-	async componentDidMount() {
-		const configs = await (await fetch("http://localhost:8080/config")).json();
-	}
-
 	render() {
 		return (
 			<div className="App">
@@ -26,6 +22,10 @@ class App extends React.Component {
 				</header>
 			</div>
 		);
+	}
+
+	async componentDidMount() {
+		const configs = await (await fetch("http://localhost:8080/config")).json();
 	}
 }
 
