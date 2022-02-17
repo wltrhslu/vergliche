@@ -7,7 +7,6 @@ import {
 	Config,
 	Product,
 } from "../db/Models.ts";
-import type { Config_Type } from "../types/databaseTypes.ts";
 
 export class DatabaseService {
 	private db: Database;
@@ -38,9 +37,5 @@ export class DatabaseService {
 		if (!(await Category.count())) {
 			await Category.addProductCategory();
 		}
-	}
-
-	async getVendors() {
-		return await Vendor.all();
 	}
 }

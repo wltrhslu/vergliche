@@ -11,3 +11,5 @@ interface IVendor {
 	selectedVendors: string;
 	productCategoryId: number;
 }
+
+type Time = `${number}:${number}:${number}`;

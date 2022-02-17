@@ -3,7 +3,6 @@ import {
 	DataTypes,
 	Relationships,
 } from "https://deno.land/x/denodb/mod.ts";
-import type { Product_Type } from "../types/types.ts";
 
 export class Vendor extends Model {
 	static table = "vendors";
@@ -180,7 +179,7 @@ export class Product extends Model {
 			brand_id
 		).get()) as any;
 
-		similarProducts = similarProducts.filter((product: Product_Type) => {
+		similarProducts = similarProducts.filter((product: any) => {
 			return product.name == name && product.producttypeId == category_id;
 		}) as Array<{}>;
 

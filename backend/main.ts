@@ -20,6 +20,7 @@ await db.initDatabase();
 import { Application, Router, send } from "https://deno.land/x/oak/mod.ts";
 import { oakCors } from "https://deno.land/x/cors/mod.ts";
 import configRouter from "./routes/config.ts";
+import vendorRouter from "./routes/vendor.ts";
 
 const port = 8080;
 const app = new Application();
@@ -32,15 +33,13 @@ router.get("/", async (context) => {
 	});
 });
 
-router.get("/vendor", async (context) => {
-	context.response.body = await db.getVendors();
-});
-
 app.use(oakCors());
 app.use(router.allowedMethods());
 app.use(router.routes());
 app.use(configRouter.allowedMethods());
 app.use(configRouter.routes());
+app.use(vendorRouter.allowedMethods());
+app.use(vendorRouter.routes());
 
 app.addEventListener("listen", () => {
 	console.log(`Listening on localhost:${port}`);
