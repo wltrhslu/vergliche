@@ -18,6 +18,7 @@ await db.initDatabase();
 // await digitec.fetchFromDigitec("3090", 106);
 
 import { Application, Router, send } from "https://deno.land/x/oak/mod.ts";
+import { oakCors } from "https://deno.land/x/cors/mod.ts";
 import configRouter from "./routes/config.ts";
 
 const port = 8080;
@@ -26,7 +27,7 @@ const router = new Router();
 
 router.get("/", async (context) => {
 	await send(context, "/", {
-		root: `${Deno.cwd()}/public`,
+		root: `${Deno.cwd()}/frontend/public`,
 		index: "index.html",
 	});
 });
@@ -35,6 +36,7 @@ router.get("/vendor", async (context) => {
 	context.response.body = await db.getVendors();
 });
 
+app.use(oakCors());
 app.use(router.allowedMethods());
 app.use(router.routes());
 app.use(configRouter.allowedMethods());
