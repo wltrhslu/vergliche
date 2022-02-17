@@ -55,8 +55,8 @@ export class Brand extends Model {
 	}
 }
 
-export class Product_Category extends Model {
-	static table = "product_categories";
+export class Category extends Model {
+	static table = "categories";
 	static timestamps = true;
 
 	static fields = {
@@ -81,7 +81,7 @@ export class Product_Category extends Model {
 	}
 
 	static async addProductCategory() {
-		await Product_Category.create([
+		await Category.create([
 			{
 				name: "Graphics Card",
 			},
@@ -107,12 +107,12 @@ export class Vendor_Category extends Model {
 	}
 
 	static productCategory() {
-		return this.hasOne(Product_Category);
+		return this.hasOne(Category);
 	}
 }
 
 Relationships.belongsTo(Vendor_Category, Vendor);
-Relationships.belongsTo(Vendor_Category, Product_Category);
+Relationships.belongsTo(Vendor_Category, Category);
 
 export class Product extends Model {
 	static table = "products";
@@ -146,8 +146,8 @@ export class Product extends Model {
 		return this.hasOne(Vendor);
 	}
 
-	static product_category() {
-		return this.hasOne(Product_Category);
+	static category() {
+		return this.hasOne(Category);
 	}
 
 	static async addProduct(
@@ -157,7 +157,7 @@ export class Product extends Model {
 		url: string,
 		vendor_id: number,
 		brandName: string,
-		productCategory: string,
+		category: string,
 		vendor_product_id?: string,
 		rating?: number
 	) {
@@ -171,9 +171,7 @@ export class Product extends Model {
 		// }
 
 		const brand_id = await this.getBrandId(brandName);
-		const product_category_id = await this.getProductCategoryId(
-			productCategory
-		);
+		const category_id = await this.getProductCategoryId(category);
 
 		//because denodb doesn't offer and/or in where clauses, we have to circumvent this by
 		//using a filter method on a js array to reduce database calls and do some any casting shenanigans
@@ -183,9 +181,7 @@ export class Product extends Model {
 		).get()) as any;
 
 		similarProducts = similarProducts.filter((product: Product_Type) => {
-			return (
-				product.name == name && product.producttypeId == product_category_id
-			);
+			return product.name == name && product.producttypeId == category_id;
 		}) as Array<{}>;
 
 		if (similarProducts.length) {
@@ -204,7 +200,7 @@ export class Product extends Model {
 				rating: rating ?? null,
 				vendor_product_id: vendor_product_id ?? null,
 				brand_id,
-				product_category_id,
+				category_id,
 			},
 		]);
 	}
@@ -234,23 +230,21 @@ export class Product extends Model {
 		return brandId[0].id;
 	}
 
-	static async getProductCategoryId(
-		product_CategoryName: string
-	): Promise<number> {
-		const product_Category = (await Product_Category.select("id")
-			.where("name", product_CategoryName)
+	static async getProductCategoryId(categoryName: string): Promise<number> {
+		const category = (await Category.select("id")
+			.where("name", categoryName)
 			.get()) as any;
 
-		if (product_Category.length != 1)
+		if (category.length != 1)
 			throw new RangeError("either no or multiple product categorys found");
 
-		return product_Category[0].id;
+		return category[0].id;
 	}
 }
 
 Relationships.belongsTo(Product, Vendor);
 Relationships.belongsTo(Product, Brand);
-Relationships.belongsTo(Product, Product_Category);
+Relationships.belongsTo(Product, Category);
 
 export class Config extends Model {
 	static table = "configs";
@@ -268,8 +262,8 @@ export class Config extends Model {
 	};
 
 	static productCategory() {
-		return this.hasOne(Product_Category);
+		return this.hasOne(Category);
 	}
 }
 
-Relationships.belongsTo(Config, Product_Category);
+Relationships.belongsTo(Config, Category);
