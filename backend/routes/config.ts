@@ -11,7 +11,7 @@ router
 			context.response.type = "json";
 			context.response.status = Status.OK;
 		} catch (error) {
-			context.response.status = 500;
+			context.response.status = Status.InternalServerError;
 			context.response.body = JSON.stringify(
 				error,
 				Object.getOwnPropertyNames(error)
@@ -21,12 +21,13 @@ router
 	})
 	.post("/config", async (context) => {
 		try {
-			await configController.createConfig(
+			const configs = await configController.createConfig(
 				(await context.request.body().value) as IConfig
 			);
-			context.response.status = 200;
+			context.response.status = Status.OK;
+			context.response.body = { length: configs.length, data: configs };
 		} catch (error) {
-			context.response.status = 500;
+			context.response.status = Status.InternalServerError;
 			context.response.body = error.message;
 		}
 	});

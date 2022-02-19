@@ -11,15 +11,21 @@ export default {
 				product_category_id: config.productCategoryId,
 			},
 		]);
+
+		return await this.getAllConfigs();
 	},
 
 	async getAllConfigs() {
 		return (await Config.all()).map((config) => {
 			return {
 				id: config.id,
-				search_frequency: config.search_frequency,
-				search_term: config.search_term,
-				selected_vendors: config.selected_vendors?.toString().split(","),
+				searchFrequency: config.search_frequency,
+				searchTerm: config.search_term,
+				selectedVendors: config.selected_vendors
+					?.toString()
+					.split(",")
+					.map(Number),
+				categoryId: config.categoryId,
 			};
 		});
 	},
