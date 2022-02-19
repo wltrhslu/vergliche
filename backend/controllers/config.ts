@@ -14,6 +14,13 @@ export default {
 	},
 
 	async getAllConfigs() {
-		return await Config.all();
+		return (await Config.all()).map((config) => {
+			return {
+				id: config.id,
+				search_frequency: config.search_frequency,
+				search_term: config.search_term,
+				selected_vendors: config.selected_vendors?.toString().split(","),
+			};
+		});
 	},
 };
