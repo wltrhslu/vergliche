@@ -1,26 +1,17 @@
-// import { Digitec } from "./services/digitec.ts";
+import { Digitec } from "./services/digitec.ts";
 import { DatabaseService } from "./services/Database.ts";
-const db = new DatabaseService(
-	"vergliche",
-	"192.168.1.11",
-	"root",
-	"Welcome01"
-);
+
+const db = new DatabaseService("vergliche", "wltr.internet-box.ch", "root", "Welcome01");
 await db.initDatabase();
-
-// import { StegElectronics } from "./services/steg.ts";
-
-// const digitec = new Digitec();
-// const steg = new StegElectronics();
-
-// await digitec.fetchFromDigitec("3070", 106);
-// await digitec.fetchFromDigitec("3080", 106);
-// await digitec.fetchFromDigitec("3090", 106);
 
 import { Application, Router, send } from "https://deno.land/x/oak/mod.ts";
 import { oakCors } from "https://deno.land/x/cors/mod.ts";
-import configRouter from "./routes/config.ts";
+import categoryRouter from "./routes/category.ts";
+import ConfigRouter from "./routes/config.ts";
 import vendorRouter from "./routes/vendor.ts";
+import vendorCategoryRouter from "./routes/vendor-category.ts";
+import ServerSentEventRouter from "./routes/sse.ts";
+import SearchService from "./services/search.ts";
 
 const port = 8080;
 const app = new Application();
@@ -33,13 +24,23 @@ router.get("/", async (context) => {
 	});
 });
 
+const searchService = new SearchService();
+const configRouter = new ConfigRouter(searchService);
+const serverSentEventRouter = new ServerSentEventRouter(searchService);
+
 app.use(oakCors());
 app.use(router.allowedMethods());
 app.use(router.routes());
-app.use(configRouter.allowedMethods());
-app.use(configRouter.routes());
+app.use(categoryRouter.allowedMethods());
+app.use(categoryRouter.routes());
+app.use(serverSentEventRouter.getRouter().allowedMethods());
+app.use(serverSentEventRouter.getRouter().routes());
+app.use(configRouter.getRouter().allowedMethods());
+app.use(configRouter.getRouter().routes());
 app.use(vendorRouter.allowedMethods());
 app.use(vendorRouter.routes());
+app.use(vendorCategoryRouter.allowedMethods());
+app.use(vendorCategoryRouter.routes());
 
 app.addEventListener("listen", () => {
 	console.log(`Listening on localhost:${port}`);

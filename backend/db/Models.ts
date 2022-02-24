@@ -1,8 +1,4 @@
-import {
-	Model,
-	DataTypes,
-	Relationships,
-} from "https://deno.land/x/denodb/mod.ts";
+import { Model, DataTypes, Relationships } from "https://deno.land/x/denodb/mod.ts";
 
 export class Vendor extends Model {
 	static table = "vendors";
@@ -113,6 +109,36 @@ export class Vendor_Category extends Model {
 Relationships.belongsTo(Vendor_Category, Vendor);
 Relationships.belongsTo(Vendor_Category, Category);
 
+export class Config extends Model {
+	static table = "configs";
+	static timestamps = true;
+
+	static fields = {
+		id: {
+			type: DataTypes.INTEGER,
+			autoIncrement: true,
+			primaryKey: true,
+		},
+		search_term: DataTypes.TEXT,
+		search_frequency: DataTypes.TIME,
+		selected_vendors: DataTypes.TEXT,
+	};
+
+	static productCategory() {
+		return this.hasOne(Category);
+	}
+
+	static products() {
+		return this.hasMany(Product);
+	}
+
+	static cheapestProducts() {
+		return this.hasMany(CheapestProduct);
+	}
+}
+
+Relationships.belongsTo(Config, Category);
+
 export class Product extends Model {
 	static table = "products";
 	static timestamps = true;
@@ -125,9 +151,12 @@ export class Product extends Model {
 		},
 		name: DataTypes.TEXT,
 		price: DataTypes.DECIMAL,
-		availability_type: DataTypes.TEXT,
+		availability: {
+			type: DataTypes.TEXT,
+			allowNull: true,
+		},
 		url: DataTypes.TEXT,
-		vendor_product_id: {
+		manufacturer_number: {
 			type: DataTypes.TEXT,
 			allowNull: true,
 		},
@@ -149,104 +178,22 @@ export class Product extends Model {
 		return this.hasOne(Category);
 	}
 
-	static async addProduct(
-		name: string,
-		price: number,
-		availability_type: string,
-		url: string,
-		vendor_id: number,
-		brandName: string,
-		category: string,
-		vendor_product_id?: string,
-		rating?: number
-	) {
-		//if vendor_product_id is the same, update the price
-		// if (await Product.where("vendor_product_id", vendor_product_id).count()) {
-		// 	Product.where("vendor_product_id", vendor_product_id).update(
-		// 		"price",
-		// 		price
-		// 	);
-		// 	return;
-		// }
-
-		const brand_id = await this.getBrandId(brandName);
-		const category_id = await this.getProductCategoryId(category);
-
-		//because denodb doesn't offer and/or in where clauses, we have to circumvent this by
-		//using a filter method on a js array to reduce database calls and do some any casting shenanigans
-		let similarProducts = (await Product.where(
-			"brand_id",
-			brand_id
-		).get()) as any;
-
-		similarProducts = similarProducts.filter((product: any) => {
-			return product.name == name && product.producttypeId == category_id;
-		}) as Array<{}>;
-
-		if (similarProducts.length) {
-			const id = similarProducts[0].id;
-			Product.where("id", id).update("price", price);
-			return;
-		}
-
-		await Product.create([
-			{
-				name,
-				price,
-				availability_type,
-				url,
-				vendor_id,
-				rating: rating ?? null,
-				vendor_product_id: vendor_product_id ?? null,
-				brand_id,
-				category_id,
-			},
-		]);
+	static config() {
+		return this.hasOne(Config);
 	}
 
-	static async getVendorId(vendorName: string): Promise<number> {
-		const vendorId = (await Vendor.select("id")
-			.where("name", vendorName)
-			.get()) as any;
-
-		if (vendorId.length != 1)
-			throw new RangeError("either no or multiple vendors found");
-
-		return vendorId[0].id;
-	}
-
-	static async getBrandId(brandName: string): Promise<number> {
-		const brandId = (await Brand.select("id")
-			.where("name", brandName)
-			.get()) as any;
-
-		if (brandId.length > 1) throw new RangeError("Mutiple brands found");
-		if (!brandId.length) {
-			await Brand.create({ name: brandName });
-			return await this.getBrandId(brandName);
-		}
-
-		return brandId[0].id;
-	}
-
-	static async getProductCategoryId(categoryName: string): Promise<number> {
-		const category = (await Category.select("id")
-			.where("name", categoryName)
-			.get()) as any;
-
-		if (category.length != 1)
-			throw new RangeError("either no or multiple product categorys found");
-
-		return category[0].id;
+	static cheapestProducts() {
+		return this.hasMany(CheapestProduct);
 	}
 }
 
 Relationships.belongsTo(Product, Vendor);
 Relationships.belongsTo(Product, Brand);
 Relationships.belongsTo(Product, Category);
+Relationships.belongsTo(Product, Config);
 
-export class Config extends Model {
-	static table = "configs";
+export class CheapestProduct extends Model {
+	static table = "cheapest_products";
 	static timestamps = true;
 
 	static fields = {
@@ -255,14 +202,16 @@ export class Config extends Model {
 			autoIncrement: true,
 			primaryKey: true,
 		},
-		search_term: DataTypes.TEXT,
-		search_frequency: DataTypes.TIME,
-		selected_vendors: DataTypes.TEXT,
 	};
 
-	static productCategory() {
-		return this.hasOne(Category);
+	static config() {
+		return this.hasOne(Config);
+	}
+
+	static product() {
+		return this.hasOne(Product);
 	}
 }
 
-Relationships.belongsTo(Config, Category);
+Relationships.belongsTo(CheapestProduct, Config);
+Relationships.belongsTo(CheapestProduct, Product);

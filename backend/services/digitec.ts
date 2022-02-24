@@ -1,6 +1,7 @@
-import { Product } from "../db/Models.ts";
+import { ISearchSubService } from "../interfaces/search.ts";
+import { DatabaseService } from "./Database.ts";
 
-export class Digitec {
+export class Digitec implements ISearchSubService {
 	private productNumberSearchQuery = `
 		query ENTER_SEARCH(
 			$query: String!
@@ -68,12 +69,17 @@ export class Digitec {
 		}
 	`;
 
-	async fetchFromDigitec(
-		searchTerm: string,
-		productType: number
-	): Promise<void> {
-		const vendorId = await Product.getVendorId("Digitec");
+	getServiceName() {
+		return "Digitec";
+	}
 
+	async searchProducts(
+		searchTerm: string,
+		productType: string,
+		vendorId: number,
+		categoryId: number,
+		configId: number
+	): Promise<IProduct[]> {
 		let response = await (
 			await fetch("https://www.digitec.ch/api/graphql", {
 				method: "POST",
@@ -82,10 +88,7 @@ export class Digitec {
 				},
 				body: JSON.stringify({
 					query: this.productNumberSearchQuery,
-					variables: this.getProductNumberSearchVariables(
-						searchTerm,
-						productType
-					),
+					variables: this.getProductNumberSearchVariables(searchTerm, productType),
 				}),
 			})
 		).json();
@@ -105,34 +108,35 @@ export class Digitec {
 				})
 			).json();
 
-			data.push(
-				this.parseDataAndAddToDb(vendorId, response.data.productDetails)
-			);
+			data.push(await this.parseData(vendorId, response.data.productDetails, categoryId, configId));
 		}
+
+		return data as IProduct[];
 	}
 
-	private async parseDataAndAddToDb(vendorId: number, data: any) {
-		let productName = data.product.name;
-		if (data.product.nameProperties)
-			productName += " " + data.product.nameProperties;
+	private async parseData(vendorId: number, data: any, categoryId: number, configId: number): Promise<IProduct> {
+		const product = {} as IProduct;
 
-		let price = Number.POSITIVE_INFINITY,
-			availabilityType;
+		product.vendor_id = vendorId;
+		product.categoryId = categoryId;
+		product.config_id = configId;
+		product.url = data.productDetails.canonicalUrl;
+		product.brand_id = await DatabaseService.getBrandId(data.product.brandName);
+
+		product.name = data.product.name;
+		if (data.product.nameProperties) product.name += " " + data.product.nameProperties;
+
+		product.price = Number.POSITIVE_INFINITY;
+		product.availability = null;
+
 		for (const offer of data.offers) {
-			if (
-				!offer.canAddToBasket ||
-				offer.type != "RETAIL" ||
-				offer.price.amountIncl > price
-			)
-				continue;
+			if (!offer.canAddToBasket || offer.type != "RETAIL" || offer.price.amountIncl > product.price) continue;
 
-			price = offer.price.amountIncl;
-			availabilityType = offer.deliveryOptions?.mail?.classification;
+			product.price = offer.price.amountIncl;
+			product.availability = offer.deliveryOptions?.mail?.classification;
 		}
 
-		if (!availabilityType) return;
-
-		let vendorProductId;
+		if (product.price === Number.POSITIVE_INFINITY) product.price = 0;
 
 		for (const specification of data.productDetails.specifications) {
 			if (specification.type != "GENERALSPECIFICATION") continue;
@@ -140,30 +144,14 @@ export class Digitec {
 			for (const property of specification.properties) {
 				if (property.type != "MANUFACTURER") continue;
 
-				vendorProductId =
-					property.values?.[0].value == "NULL"
-						? null
-						: property.values?.[0].value;
+				product.manufacturer_number = property.values?.[0].value == "NULL" ? null : property.values?.[0].value;
 			}
 		}
 
-		Product.addProduct(
-			productName,
-			price,
-			availabilityType,
-			data.productDetails.canonicalUrl,
-			vendorId,
-			data.product.brandName,
-			"Graphics Card",
-			vendorProductId,
-			data.product.averageRating
-		);
+		return product;
 	}
 
-	private getProductNumberSearchVariables(
-		searchTerm: string,
-		productType: number
-	) {
+	private getProductNumberSearchVariables(searchTerm: string, productType: string) {
 		return `
 			{
 				"query": "${searchTerm}",

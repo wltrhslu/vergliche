@@ -6,7 +6,7 @@
 			"type": "node",
 			"request": "launch",
 			"cwd": "${workspaceFolder}",
-			"program": "${workspaceFolder}/backend/main.ts",
+			"program": "${workspaceFolder}/main.ts",
 			"runtimeExecutable": "deno",
 			"runtimeArgs": [
 				"run",
