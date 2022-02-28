@@ -78,6 +78,10 @@ export class DatabaseService {
 		return (await Config.find(configId)) as unknown as IConfig;
 	}
 
+	static async getCheapestProducts(configId: number) {
+		return await Config.where("id", configId).cheapestProducts();
+	}
+
 	static async addOrUpdateProduct(product: IProduct) {
 		//fuzzymatching for the product, since sometimes the manufacturer_number is the same for different products or not provided
 		let similarProducts = (await Product.where("brand_id", product.brand_id).get()) as any;
