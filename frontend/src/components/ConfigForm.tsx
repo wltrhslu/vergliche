@@ -83,6 +83,7 @@ const ConfigForm: FC<{ configId: number | null; onSubmit: Function }> = (props) 
 					{config.id ? null : <option id="null">Select Category</option>}
 					{categories.map((category) => (
 						<option
+							key={category.id}
 							id={category.id.toString()}
 							selected={category.id === config.category_id ? true : false}
 							value={category.id}
