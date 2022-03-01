@@ -82,7 +82,7 @@ export class Category extends Model {
   static async addProductCategory() {
     await Category.create([
       {
-        brand_name: "Graphics Card",
+        category_name: "Graphics Card",
       },
     ]);
   }

@@ -5,7 +5,7 @@ export default {
 		return (await Vendor.all()).map((vendor) => {
 			return {
 				id: vendor.id,
-				name: vendor.name,
+				vendor_name: vendor.name,
 				url: vendor.url,
 			};
 		});
