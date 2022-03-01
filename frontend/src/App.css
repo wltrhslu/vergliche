@@ -26,7 +26,7 @@
 .App > div {
 	display: grid;
 	grid-gap: 1em;
-	grid-template-columns: repeat(auto-fill, 750px);
+	grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
 	grid-template-rows: repeat(auto-fit, 250px);
 	grid-area: content;
 }
