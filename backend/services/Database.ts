@@ -82,16 +82,18 @@ export class DatabaseService {
 
 	static async getCheapestProducts(configId: number) {
 		const fields = [
-			"id",
-			"updatedAt",
-			"vendorName",
-			"brandName",
+			CheapestProduct.field("id"),
+			CheapestProduct.field("created_at"),
+			Product.field("updated_at"),
+			"vendor_name",
+			"brand_name",
 			"rating",
-			"manufacturerNumber",
-			"productUrl",
+			"manufacturer_number",
+			"product_url",
 			"availability",
-			"productName",
-			"productId",
+			"product_name",
+			"product_id",
+			"price",
 		];
 		return await CheapestProduct.where(CheapestProduct.field("config_id"), configId)
 			.join(Product, Product.field("id"), CheapestProduct.field("product_id"))
@@ -113,9 +115,18 @@ export class DatabaseService {
 			.filter((product) => Math.floor(product.price) !== 0)
 			.reduce((previous, current) => (previous.price < current.price ? previous : current)).id;
 
+		const search_frequency = (
+			(await Config.select("search_frequency").find(configId)) as unknown as { search_frequency: string }
+		).search_frequency;
+		const minutes = search_frequency.split(":")[1];
+
+		const created_at = new Date();
+		created_at.setMinutes(parseInt(minutes), 0, 0);
+
 		await CheapestProduct.create({
 			config_id: configId,
 			product_id: cheapestProductId,
+			created_at: created_at.toISOString().slice(0, 19).replace("T", " "),
 		});
 	}
 
