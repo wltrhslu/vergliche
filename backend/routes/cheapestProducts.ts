@@ -1,5 +1,4 @@
 import { Router, Status } from "https://deno.land/x/oak/mod.ts";
-import vendorCategoryController from "../controllers/vendor-category.ts";
 import { DatabaseService } from "../services/Database.ts";
 
 const router = new Router();
