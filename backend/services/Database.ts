@@ -104,7 +104,7 @@ export class DatabaseService {
 
 		await Product.create([
 			{
-				product_name: product.name,
+				product_name: product.product_name,
 				price: product.price,
 				availability: product.availability,
 				url: product.url,
