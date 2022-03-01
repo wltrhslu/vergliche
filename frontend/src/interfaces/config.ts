@@ -6,11 +6,6 @@ export interface IConfig {
 	category_id?: number;
 }
 
-// export interface IConfigList {
-// 	length: number;
-// 	data: number[];
-// }
-
 export interface IVendor {
 	id: number;
 	name: string;
@@ -20,4 +15,15 @@ export interface IVendor {
 export interface ICategory {
 	id: number;
 	name: string;
+}
+
+export interface IProduct {
+	name: string;
+	price: number;
+	availability: string | null;
+	url: string;
+	manufacturer_number: string | null;
+	rating: number | null;
+	vendor: string;
+	brand: string;
 }
