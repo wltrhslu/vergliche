@@ -1,7 +1,7 @@
-import React, { useState } from "react";
-import { FC, FunctionComponent, useEffect } from "react";
-import { suspend } from "suspend-react";
+import { useState } from "react";
+import { FC, useEffect } from "react";
 import { IConfig } from "../interfaces/config";
+import Chart from "./Chart";
 import ConfigForm from "./ConfigForm";
 
 const serverUrl = "http://localhost:8080";
@@ -9,34 +9,9 @@ const serverUrl = "http://localhost:8080";
 const ConfigContainer: FC = () => {
 	const [configs, setConfigs] = useState(new Array<{ id: number }>());
 
-	const addConfig = async (config: IConfig) => {
-		debugger;
-
-		// const jsonObject = {
-		// 	searchTerm: config.searchTerm,
-		// 	searchFrequency: config.searchFrequency,
-		// 	selectedVendors: config.selectedVendors,
-		// 	categoryId: config.categoryId,
-		// };
-
-		// const response = await (
-		// 	await fetch(`${serverUrl}/config`, {
-		// 		method: "POST",
-		// 		headers: {
-		// 			"Content-Type": "application/json",
-		// 		},
-		// 		body: JSON.stringify(jsonObject),
-		// 	})
-		// ).json();
-
-		// console.log(response);
-	};
-
 	useEffect(() => {
 		const getConfigs = async () => {
-			setConfigs(
-				(await (await fetch(`${serverUrl}/config`)).json()) as [{ id: number }]
-			);
+			setConfigs((await (await fetch(`${serverUrl}/config`)).json()) as [{ id: number }]);
 		};
 
 		getConfigs();
@@ -74,11 +49,10 @@ const ConfigContainer: FC = () => {
 		<div>
 			{configs.map((config) => {
 				return (
-					<ConfigForm
-						key={config.id}
-						configId={config.id}
-						onSubmit={onSubmit}
-					></ConfigForm>
+					<section>
+						<Chart key={config.id} configId={config.id}></Chart>
+						<ConfigForm key={config.id} configId={config.id} onSubmit={onSubmit}></ConfigForm>
+					</section>
 				);
 			})}
 

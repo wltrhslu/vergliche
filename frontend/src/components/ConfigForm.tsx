@@ -1,6 +1,5 @@
 import React, { useContext, useEffect, useState } from "react";
 import { FC } from "react";
-import { suspend } from "suspend-react";
 import { VendorContext } from "../App";
 import { ICategory, IConfig } from "../interfaces/config";
 
@@ -68,7 +67,7 @@ const ConfigForm: FC<{ configId: number | null; onSubmit: Function }> = (props) 
 					name="search_frequency"
 					id="search_frequency"
 					placeholder="hh:mm"
-					value={config.search_frequency}
+					value={config.search_frequency?.slice(0, 5)}
 					onChange={(event) => {
 						handleChange(event.target.name, event.target.value);
 					}}
