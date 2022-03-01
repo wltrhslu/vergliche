@@ -123,8 +123,8 @@ export class Digitec implements ISearchSubService {
 		product.url = data.productDetails.canonicalUrl;
 		product.brand_id = await DatabaseService.getBrandId(data.product.brandName);
 
-		product.name = data.product.name;
-		if (data.product.nameProperties) product.name += " " + data.product.nameProperties;
+		product.product_name = data.product.name;
+		if (data.product.nameProperties) product.product_name += " " + data.product.nameProperties;
 
 		product.price = Number.POSITIVE_INFINITY;
 		product.availability = null;
@@ -136,7 +136,7 @@ export class Digitec implements ISearchSubService {
 			product.availability = offer.deliveryOptions?.mail?.classification;
 		}
 
-		if (product.price === Number.POSITIVE_INFINITY) product.price = 0;
+		if (product.price === Number.POSITIVE_INFINITY) product.price = null;
 
 		for (const specification of data.productDetails.specifications) {
 			if (specification.type != "GENERALSPECIFICATION") continue;

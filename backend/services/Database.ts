@@ -29,7 +29,7 @@ export class DatabaseService {
 	}
 
 	static async getVendorId(vendorName: string): Promise<number> {
-		const vendorId = (await Vendor.select("id").where("name", vendorName).get()) as any;
+		const vendorId = (await Vendor.select("id").where("vendor_name", vendorName).get()) as any;
 
 		if (vendorId.length != 1) throw new RangeError("either no or multiple vendors found");
 
@@ -37,18 +37,18 @@ export class DatabaseService {
 	}
 
 	static async getBrandId(brandName: string): Promise<number> {
-		const brandId = (await Brand.select("id").where("name", brandName).get()) as any;
+		const brandId = (await Brand.select("id").where("brand_name", brandName).get()) as any;
 
 		if (brandId.length > 1) throw new RangeError("Mutiple brands found");
 		if (!brandId.length) {
-			return (await Brand.create({ name: brandName })).lastInsertId as number;
+			return (await Brand.create({ brand_name: brandName })).lastInsertId as number;
 		}
 
 		return brandId[0].id;
 	}
 
 	static async getCategoryId(categoryName: string): Promise<number> {
-		const category = (await Category.select("id").where("name", categoryName).get()) as any;
+		const category = (await Category.select("id").where("category_name", categoryName).get()) as any;
 
 		if (category.length != 1) throw new RangeError("either no or multiple product categorys found");
 
@@ -91,7 +91,7 @@ export class DatabaseService {
 
 		similarProducts = similarProducts.filter((similarProduct: any) => {
 			if (similarProduct.configId !== product.config_id) return false;
-			if (similarProduct.name == product.name) return true;
+			if (similarProduct.product_name == product.product_name) return true;
 			return false;
 		}) as IProduct[];
 
@@ -104,7 +104,7 @@ export class DatabaseService {
 
 		await Product.create([
 			{
-				name: product.name,
+				product_name: product.name,
 				price: product.price,
 				availability: product.availability,
 				url: product.url,
