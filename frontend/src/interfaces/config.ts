@@ -18,12 +18,16 @@ export interface ICategory {
 }
 
 export interface IProduct {
-	name: string;
-	price: number;
-	availability: string | null;
-	url: string;
-	manufacturer_number: string | null;
-	rating: number | null;
-	vendor: string;
-	brand: string;
+	availability: string;
+	brandName: string;
+	created_at: string;
+	id: number;
+	manufacturerNumber: string;
+	price: string;
+	productId: number;
+	productName: string;
+	productUrl: string;
+	rating: string | null;
+	updatedAt: string;
+	vendorName: string;
 }
