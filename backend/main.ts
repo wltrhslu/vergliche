@@ -11,7 +11,7 @@ import ConfigRouter from "./routes/config.ts";
 import vendorRouter from "./routes/vendor.ts";
 import vendorCategoryRouter from "./routes/vendor-category.ts";
 import ServerSentEventRouter from "./routes/sse.ts";
-import CheapestProducts from "./routes/cheapestProducts.ts";
+import cheapestProducts from "./routes/cheapestProducts.ts";
 import SearchService from "./services/search.ts";
 
 const port = 8080;
@@ -42,8 +42,8 @@ app.use(vendorRouter.allowedMethods());
 app.use(vendorRouter.routes());
 app.use(vendorCategoryRouter.allowedMethods());
 app.use(vendorCategoryRouter.routes());
-app.use(CheapestProducts.allowedMethods());
-app.use(CheapestProducts.routes());
+app.use(cheapestProducts.allowedMethods());
+app.use(cheapestProducts.routes());
 
 app.addEventListener("listen", () => {
 	console.log(`Listening on localhost:${port}`);
