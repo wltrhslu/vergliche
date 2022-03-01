@@ -79,7 +79,10 @@ export class DatabaseService {
 	}
 
 	static async getCheapestProducts(configId: number) {
-		return await Config.where("id", configId).cheapestProducts();
+		return await CheapestProduct.where(CheapestProduct.field("config_id"), configId)
+			.join(Product, Product.field("id"), CheapestProduct.field("product_id"))
+			.join(Vendor, Vendor.field("id"), Product.field("vendor_id"))
+			.get();
 	}
 
 	static async addOrUpdateProduct(product: IProduct) {
