@@ -8,7 +8,7 @@ interface IConfig {
 interface IVendor {
 	id: number;
 	vendor_name: string;
-	url: string;
+	vendor_url: string;
 }
 
 interface IVendorCategory {
@@ -22,7 +22,7 @@ interface IProduct {
 	product_name: string;
 	price: number | null;
 	availability: string | null;
-	url: string;
+	product_url: string;
 	manufacturer_number: string | null;
 	rating: number | null;
 	vendor_id: number;

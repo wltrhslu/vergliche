@@ -6,7 +6,7 @@ export default {
 			return {
 				id: vendor.id,
 				vendor_name: vendor.name,
-				url: vendor.url,
+				vendor_url: vendor.vendorUrl,
 			};
 		});
 	},

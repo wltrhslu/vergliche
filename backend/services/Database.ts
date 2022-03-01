@@ -19,7 +19,7 @@ export class DatabaseService {
 	}
 
 	async initDatabase() {
-		// await this.db.sync();
+		// await this.db.sync({ drop: true });
 		if (!(await Vendor.count())) {
 			await Vendor.addVendors();
 		}
@@ -29,7 +29,7 @@ export class DatabaseService {
 	}
 
 	static async getVendorId(vendorName: string): Promise<number> {
-		const vendorId = (await Vendor.select("id").where("vendor_name", vendorName).get()) as unknown as [{id: number}];
+		const vendorId = (await Vendor.select("id").where("vendor_name", vendorName).get()) as unknown as [{ id: number }];
 
 		if (vendorId.length != 1) throw new RangeError("either no or multiple vendors found");
 
@@ -37,7 +37,7 @@ export class DatabaseService {
 	}
 
 	static async getBrandId(brandName: string): Promise<number> {
-		const brandId = (await Brand.select("id").where("brand_name", brandName).get()) as unknown as [{id: number}];
+		const brandId = (await Brand.select("id").where("brand_name", brandName).get()) as unknown as [{ id: number }];
 
 		if (brandId.length > 1) throw new RangeError("Mutiple brands found");
 		if (!brandId.length) {
@@ -48,7 +48,9 @@ export class DatabaseService {
 	}
 
 	static async getCategoryId(categoryName: string): Promise<number> {
-		const category = (await Category.select("id").where("category_name", categoryName).get()) as unknown as [{id: number}];
+		const category = (await Category.select("id").where("category_name", categoryName).get()) as unknown as [
+			{ id: number }
+		];
 
 		if (category.length != 1) throw new RangeError("either no or multiple product categorys found");
 
@@ -79,43 +81,24 @@ export class DatabaseService {
 	}
 
 	static async getCheapestProducts(configId: number) {
+		const fields = [
+			"id",
+			"updatedAt",
+			"vendorName",
+			"brandName",
+			"rating",
+			"manufacturerNumber",
+			"productUrl",
+			"availability",
+			"productName",
+			"productId",
+		];
 		return await CheapestProduct.where(CheapestProduct.field("config_id"), configId)
 			.join(Product, Product.field("id"), CheapestProduct.field("product_id"))
 			.join(Vendor, Vendor.field("id"), Product.field("vendor_id"))
+			.join(Brand, Brand.field("id"), Product.field("brand_id"))
+			.select(...fields)
 			.get();
-	}
-
-	static async addOrUpdateProduct(product: IProduct) {
-		//fuzzymatching for the product, since sometimes the manufacturer_number is the same for different products or not provided
-		let similarProducts = (await Product.where("brand_id", product.brand_id).get()) as IProduct[];
-
-		similarProducts = similarProducts.filter((similarProduct: IProduct) => {
-			if (similarProduct.configId !== product.config_id) return false;
-			if (similarProduct.product_name == product.product_name) return true;
-			return false;
-		}) as IProduct[];
-
-		if (similarProducts.length > 1) throw new RangeError("To many products match new product");
-		else if (similarProducts.length) {
-			const id = similarProducts[0].id;
-			Product.where("id", id).update({ price: product.price, availability: product.availability, url: product.url });
-			return;
-		}
-
-		await Product.create([
-			{
-				product_name: product.product_name,
-				price: product.price,
-				availability: product.availability,
-				url: product.url,
-				vendor_id: product.vendor_id,
-				rating: product.rating ?? null,
-				manufacturer_number: product.manufacturer_number ?? null,
-				brand_id: product.brand_id,
-				category_id: product.categoryId,
-				config_id: product.config_id,
-			},
-		]);
 	}
 
 	static async setCheapestProduct(configId: number) {
@@ -134,5 +117,42 @@ export class DatabaseService {
 			config_id: configId,
 			product_id: cheapestProductId,
 		});
+	}
+
+	static async addOrUpdateProduct(product: IProduct) {
+		//fuzzymatching for the product, since sometimes the manufacturer_number is the same for different products or not provided
+		let similarProducts = (await Product.where("brand_id", product.brand_id).get()) as IProduct[];
+
+		similarProducts = similarProducts.filter((similarProduct: IProduct) => {
+			if (similarProduct.configId !== product.config_id) return false;
+			if (similarProduct.product_name == product.product_name) return true;
+			return false;
+		}) as IProduct[];
+
+		if (similarProducts.length > 1) throw new RangeError("To many products match new product");
+		else if (similarProducts.length) {
+			const id = similarProducts[0].id;
+			Product.where("id", id).update({
+				price: product.price,
+				availability: product.availability,
+				product_url: product.url,
+			});
+			return;
+		}
+
+		await Product.create([
+			{
+				product_name: product.product_name,
+				price: product.price,
+				availability: product.availability,
+				product_url: product.product_url,
+				vendor_id: product.vendor_id,
+				rating: product.rating ?? null,
+				manufacturer_number: product.manufacturer_number ?? null,
+				brand_id: product.brand_id,
+				category_id: product.categoryId,
+				config_id: product.config_id,
+			},
+		]);
 	}
 }
