@@ -121,6 +121,7 @@ export class Digitec implements ISearchSubService {
 		product.categoryId = categoryId;
 		product.config_id = configId;
 		product.url = data.productDetails.canonicalUrl;
+		product.rating = data.product.averageRating || null;
 		product.brand_id = await DatabaseService.getBrandId(data.product.brandName);
 
 		product.product_name = data.product.name;
