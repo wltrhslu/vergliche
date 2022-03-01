@@ -19,7 +19,7 @@ export default {
 						selected_vendors: config.selected_vendors.join(","),
 						category_id: config.category_id,
 					},
-				])) as any
+				])) as unknown as {lastInsertId: number}
 			).lastInsertId
 		);
 
