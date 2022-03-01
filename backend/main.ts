@@ -1,11 +1,10 @@
-import { Digitec } from "./services/digitec.ts";
 import { DatabaseService } from "./services/Database.ts";
 
 const db = new DatabaseService("vergliche", "wltr.internet-box.ch", "root", "Welcome01");
 await db.initDatabase();
 
-import { Application, Router, send } from "https://deno.land/x/oak/mod.ts";
-import { oakCors } from "https://deno.land/x/cors/mod.ts";
+import { Application, Router, send } from "https://deno.land/x/oak@v10.4.0/mod.ts";
+import { oakCors } from "https://deno.land/x/cors@v1.2.2/mod.ts";
 import categoryRouter from "./routes/category.ts";
 import ConfigRouter from "./routes/config.ts";
 import vendorRouter from "./routes/vendor.ts";

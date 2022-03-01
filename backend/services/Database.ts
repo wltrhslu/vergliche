@@ -1,4 +1,4 @@
-import { Database, MySQLConnector } from "https://deno.land/x/denodb/mod.ts";
+import { Database, MySQLConnector } from "https://deno.land/x/denodb@v1.0.40/mod.ts";
 import { Vendor, Brand, Category, Vendor_Category, Config, Product, CheapestProduct } from "../db/Models.ts";
 import { IConfig, IProduct } from "../interfaces/database.ts";
 

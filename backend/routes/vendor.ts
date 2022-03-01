@@ -1,4 +1,4 @@
-import { Router, Status } from "https://deno.land/x/oak/mod.ts";
+import { Router, Status } from "https://deno.land/x/oak@v10.4.0/mod.ts";
 import vendorController from "../controllers/vendor.ts";
 
 const router = new Router();
