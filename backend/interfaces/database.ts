@@ -1,4 +1,5 @@
 interface IConfig {
+	id: number;
 	search_term: string;
 	search_frequency: `${number}:${number}`;
 	selected_vendors: number[];

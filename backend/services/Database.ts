@@ -76,8 +76,21 @@ export class DatabaseService {
 		return (await Config.select("search_frequency").find(configId)).search_frequency as string;
 	}
 
-	static async getConfig(configId: number) {
-		return (await Config.find(configId)) as unknown as IConfig;
+	static async getConfig(configId: number | null): Promise<IConfig | IConfig[]> {
+		const fields = ["id", "search_term", "search_frequency", "selected_vendors", "category_id"];
+
+		if (configId) {
+			const data = await Config.select(...fields).find(configId);
+			return {
+				id: data.id,
+				search_term: data.search_term,
+				search_frequency: data.search_frequency,
+				selected_vendors: (data.selected_vendors as string).split(",").map((id) => parseInt(id)),
+				category_id: data.categoryId,
+			} as IConfig;
+		}
+
+		return (await Config.select("id").all()) as IConfig[];
 	}
 
 	static async getCheapestProducts(configId: number) {
@@ -112,7 +125,7 @@ export class DatabaseService {
 		if (!products.length) throw new RangeError(`No Products found with configId: ${configId}`);
 
 		const cheapestProductId = products
-			.filter((product) => Math.floor(product.price) !== 0)
+			.filter((product) => product.price !== null)
 			.reduce((previous, current) => (previous.price < current.price ? previous : current)).id;
 
 		const search_frequency = (

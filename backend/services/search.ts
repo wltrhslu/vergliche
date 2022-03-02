@@ -26,6 +26,10 @@ export default class SearchService {
 		this.sseTargets.push({ configId, target });
 	}
 
+	async registerAllConfigs() {
+		((await DatabaseService.getConfig(null)) as IConfig[]).map((config) => this.addConfig(config.id));
+	}
+
 	removeSseTarget(targetToBeRemoved: ServerSentEventTarget) {
 		this.sseTargets = this.sseTargets.filter((target) => target.target !== targetToBeRemoved);
 	}
