@@ -1,4 +1,4 @@
-import { Router, Status } from "https://deno.land/x/oak/mod.ts";
+import { Router, Status } from "https://deno.land/x/oak@v10.4.0/mod.ts";
 import SearchService from "../services/search.ts";
 
 export default class ServerSentEventRouter {
@@ -23,12 +23,6 @@ export default class ServerSentEventRouter {
 					this.searchService.removeSseTarget(target);
 				});
 			}
-			// 	context.response.body = config;
-			// 	context.response.type = "json";
-			// 	context.response.status = Status.OK;
-			// } catch (error) {
-			// 	context.response.status = Status.InternalServerError;
-			// 	context.response.body = JSON.stringify(error, Object.getOwnPropertyNames(error));
 		});
 	}
 
