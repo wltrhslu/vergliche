@@ -18,8 +18,7 @@ export default class SearchService {
 		const searchFrequency = await DatabaseService.getSearchFrequency(configId);
 		const [h, m, _s] = searchFrequency.split(":").map((value) => parseInt(value));
 
-		cron(`*/1 * * * *`, () => this.searchProducts(configId));
-		// cron(`${m} */${h} * * *`, () => this.searchProducts(configId));
+		cron(`${m} */${h} * * *`, () => this.searchProducts(configId));
 	}
 
 	addSseTarget(configId: number, target: ServerSentEventTarget) {

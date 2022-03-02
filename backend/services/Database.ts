@@ -124,8 +124,6 @@ export class DatabaseService {
 
 		if (!products.length) throw new RangeError(`No Products found with configId: ${configId}`);
 
-		console.log(products);
-
 		const sortedOutProducts = products.filter((product) => product.price !== null);
 
 		if (!sortedOutProducts.length) throw new RangeError("Found no product with a price");
