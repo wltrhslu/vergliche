@@ -20,10 +20,7 @@ const customStyles = {
 // 	Add: forwardRef((props, ref) => <AddBox {...props} ref={ref} />),
 // };
 
-const AppSettingsButton: FC<{ state: boolean; setState: Function }> = ({
-	state,
-	setState,
-}) => {
+const AppSettingsButton: FC<{ state: boolean; setState: Function }> = ({ state, setState }) => {
 	const closeModal = () => setState(false);
 	const vendors = useContext(VendorContext);
 	const columns = [
@@ -33,15 +30,13 @@ const AppSettingsButton: FC<{ state: boolean; setState: Function }> = ({
 		},
 		...vendors.map((vendor) => {
 			return {
-				Header: vendor.name,
+				Header: vendor.vendor_name,
 				accessor: vendor.id,
 			};
 		}),
 	];
 
-	const [vendorCategories, setVendorCategories] = useState(
-		new Array<IVendorCategories>()
-	);
+	const [vendorCategories, setVendorCategories] = useState(new Array<IVendorCategories>());
 
 	useEffect(() => {
 		async function getData() {
@@ -54,12 +49,7 @@ const AppSettingsButton: FC<{ state: boolean; setState: Function }> = ({
 	}, []);
 
 	return (
-		<Modal
-			isOpen={state}
-			onRequestClose={closeModal}
-			style={customStyles}
-			contentLabel="Example Modal"
-		>
+		<Modal isOpen={state} onRequestClose={closeModal} style={customStyles} contentLabel="Example Modal">
 			<h2>Hello</h2>
 			<button onClick={closeModal}>close</button>
 			<div>I am a modal</div>
