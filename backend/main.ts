@@ -16,11 +16,17 @@ import SearchService from "./services/search.ts";
 const port = 8080;
 const app = new Application();
 const router = new Router();
+let cwd = Deno.cwd();
+cwd = cwd.substring(0, cwd.lastIndexOf("\\") + 1);
 
 router.get("/", async (context) => {
-	await send(context, "/", {
-		root: `${Deno.cwd()}/frontend/public`,
-		index: "index.html",
+	const body = await Deno.readTextFile(`${cwd}/frontend/build/index.html`);
+	context.response.body = body;
+});
+
+router.get("/static/:path+", async (context) => {
+	await send(context, context.request.url.pathname, {
+		root: `${cwd}/frontend/build`,
 	});
 });
 
