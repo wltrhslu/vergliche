@@ -18,7 +18,8 @@ export default class SearchService {
 		const searchFrequency = await DatabaseService.getSearchFrequency(configId);
 		const [h, m, _s] = searchFrequency.split(":").map((value) => parseInt(value));
 
-		cron(`${m} */${h} * * *`, () => this.searchProducts(configId));
+		cron(`*/1 * * * *`, () => this.searchProducts(configId));
+		// cron(`${m} */${h} * * *`, () => this.searchProducts(configId));
 	}
 
 	addSseTarget(configId: number, target: ServerSentEventTarget) {
@@ -39,7 +40,7 @@ export default class SearchService {
 		for (const service of this.searchServices) {
 			const vendorId = await DatabaseService.getVendorId(service.getServiceName());
 			if (!config.selected_vendors.includes(vendorId)) continue;
-			const vendorCategoryIdentifier = await DatabaseService.getVendorCategoryIdentifier(vendorId, config.categoryId);
+			const vendorCategoryIdentifier = await DatabaseService.getVendorCategoryIdentifier(vendorId, config.category_id);
 
 			const products = await service.searchProducts(
 				config.search_term,
@@ -54,7 +55,11 @@ export default class SearchService {
 			}
 		}
 
-		await DatabaseService.setCheapestProduct(configId);
+		try {
+			await DatabaseService.setCheapestProduct(configId);
+		} catch (error) {
+			console.log(error);
+		}
 
 		this.sseTargets
 			.filter((target) => (target.configId = configId))

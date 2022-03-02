@@ -124,9 +124,15 @@ export class DatabaseService {
 
 		if (!products.length) throw new RangeError(`No Products found with configId: ${configId}`);
 
-		const cheapestProductId = products
-			.filter((product) => product.price !== null)
-			.reduce((previous, current) => (previous.price < current.price ? previous : current)).id;
+		console.log(products);
+
+		const sortedOutProducts = products.filter((product) => product.price !== null);
+
+		if (!sortedOutProducts.length) throw new RangeError("Found no product with a price");
+
+		const cheapestProductId = sortedOutProducts.reduce((previous, current) =>
+			previous.price < current.price ? previous : current
+		).id;
 
 		const search_frequency = (
 			(await Config.select("search_frequency").find(configId)) as unknown as { search_frequency: string }
