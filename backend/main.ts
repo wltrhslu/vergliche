@@ -25,10 +25,12 @@ router.get("/", async (context) => {
 });
 
 const searchService = new SearchService();
+await searchService.registerAllConfigs();
+
 const configRouter = new ConfigRouter(searchService);
 const serverSentEventRouter = new ServerSentEventRouter(searchService);
 
-app.use(oakCors());
+app.use(oakCors({ credentials: true, origin: "http://localhost:3000" }));
 app.use(router.allowedMethods());
 app.use(router.routes());
 app.use(categoryRouter.allowedMethods());
