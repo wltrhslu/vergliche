@@ -5,8 +5,7 @@ import AppSettingsButton from "./components/AppSettingsButton";
 import { suspend } from "suspend-react";
 import ConfigContainer from "./components/ConfigContainer";
 import AppSettings from "./components/AppSettings";
-
-const serverUrl = "http://localhost:8080";
+import { serverUrl } from "./helpers/serverUrl";
 
 export const VendorContext = createContext(new Array<IVendor>());
 
@@ -25,10 +24,7 @@ const App: FC = () => {
 				<AppSettingsButton onClick={setIsModalOpen} />
 				<button className="button button-refresh">refresh all</button>
 				<ConfigContainer></ConfigContainer>
-				<AppSettings
-					state={isModalOpen}
-					setState={setIsModalOpen}
-				></AppSettings>
+				<AppSettings state={isModalOpen} setState={setIsModalOpen}></AppSettings>
 			</VendorContext.Provider>
 		</div>
 	);

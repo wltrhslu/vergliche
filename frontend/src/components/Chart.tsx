@@ -11,10 +11,9 @@ import {
 	Legend,
 } from "chart.js";
 import { Line } from "react-chartjs-2";
+import { serverUrl } from "../helpers/serverUrl";
 
 ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend);
-
-const serverUrl = "http://localhost:8080";
 
 const Chart: FC<{ configId: number }> = (props) => {
 	const [config, setConfig] = useState({} as IConfig);

@@ -3,8 +3,7 @@ import { FC, useEffect } from "react";
 import { IConfig } from "../interfaces/config";
 import Chart from "./Chart";
 import ConfigForm from "./ConfigForm";
-
-const serverUrl = "http://localhost:8080";
+import { serverUrl } from "../helpers/serverUrl";
 
 const ConfigContainer: FC = () => {
 	const [configs, setConfigs] = useState(new Array<{ id: number }>());

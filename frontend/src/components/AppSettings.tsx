@@ -2,8 +2,7 @@ import { FC, forwardRef, useContext, useEffect, useState } from "react";
 import Modal from "react-modal";
 import { VendorContext } from "../App";
 import { ICategory } from "../interfaces/config";
-
-const serverUrl = "http://localhost:8080";
+import { serverUrl } from "../helpers/serverUrl";
 
 Modal.setAppElement("#root");
 const customStyles = {

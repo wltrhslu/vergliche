@@ -8,13 +8,13 @@ export interface IConfig {
 
 export interface IVendor {
 	id: number;
-	name: string;
+	vendor_name: string;
 	url: string;
 }
 
 export interface ICategory {
 	id: number;
-	name: string;
+	category_name: string;
 }
 
 export interface IProduct {

@@ -2,8 +2,7 @@ import React, { useContext, useEffect, useState } from "react";
 import { FC } from "react";
 import { VendorContext } from "../App";
 import { ICategory, IConfig } from "../interfaces/config";
-
-const serverUrl = "http://localhost:8080";
+import { serverUrl } from "../helpers/serverUrl";
 
 const ConfigForm: FC<{ configId: number | null; onSubmit: Function }> = (props) => {
 	const vendors = useContext(VendorContext);
@@ -88,7 +87,7 @@ const ConfigForm: FC<{ configId: number | null; onSubmit: Function }> = (props) 
 							selected={category.id === config.category_id ? true : false}
 							value={category.id}
 						>
-							{category.name}
+							{category.category_name}
 						</option>
 					))}
 				</select>
@@ -96,7 +95,7 @@ const ConfigForm: FC<{ configId: number | null; onSubmit: Function }> = (props) 
 			<div className="checkbox-vendor">
 				{vendors.map((vendor) => (
 					<fieldset key={vendor.id}>
-						<label htmlFor={vendor.id + ""}>{vendor.name}</label>
+						<label htmlFor={vendor.id + ""}>{vendor.vendor_name}</label>
 						<input
 							type="checkbox"
 							id={vendor.id + ""}
