@@ -1,6 +1,6 @@
 import { Digitec } from "./digitec.ts";
-import { StegElectronics } from "./steg.ts";
-import { cron } from "https://deno.land/x/deno_cron/cron.ts";
+// import { StegElectronics } from "./steg.ts";
+import { cron } from "https://deno.land/x/deno_cron@v1.0.0/cron.ts";
 import { DatabaseService } from "./Database.ts";
 import { ISearchSubService } from "../interfaces/search.ts";
 import { ServerSentEventTarget } from "https://deno.land/x/oak@v10.2.1/server_sent_event.ts";
