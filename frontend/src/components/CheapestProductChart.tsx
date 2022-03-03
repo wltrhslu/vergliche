@@ -15,7 +15,7 @@ import { serverUrl } from "../helpers/serverUrl";
 
 ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend);
 
-const Chart: FC<{ configId: number }> = (props) => {
+const CheapestProductChart: FC<{ configId: number }> = (props) => {
 	const [config, setConfig] = useState({} as IConfig);
 	const [chartData, setchartData] = useState(
 		{} as {
@@ -32,7 +32,9 @@ const Chart: FC<{ configId: number }> = (props) => {
 				callbacks: {
 					title: (context: any) => context[0].dataset.data[context[0].dataIndex].productName,
 					afterTitle: (context: any) => context[0].dataset.data[context[0].dataIndex].brandName,
-					label: (context: any) => context[0].dataset.data[context[0].dataIndex].brandName,
+					label: (context: any) => {
+						return context[0].dataset.data[context[0].dataIndex].brandName;
+					},
 				},
 			},
 		},
@@ -75,4 +77,4 @@ const Chart: FC<{ configId: number }> = (props) => {
 	return <span></span>;
 };
 
-export default Chart;
+export default CheapestProductChart;

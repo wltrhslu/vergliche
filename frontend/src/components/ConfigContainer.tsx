@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { FC, useEffect } from "react";
 import { IConfig } from "../interfaces/config";
-import Chart from "./Chart";
+import CheapestProductChart from "./CheapestProductChart";
 import ConfigForm from "./ConfigForm";
 import { serverUrl } from "../helpers/serverUrl";
 
@@ -49,7 +49,7 @@ const ConfigContainer: FC = () => {
 			{configs.map((config) => {
 				return (
 					<section>
-						<Chart key={config.id} configId={config.id}></Chart>
+						<CheapestProductChart key={config.id} configId={config.id}></CheapestProductChart>
 						<ConfigForm key={config.id} configId={config.id} onSubmit={onSubmit}></ConfigForm>
 					</section>
 				);
