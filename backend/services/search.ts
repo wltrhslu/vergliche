@@ -45,7 +45,7 @@ export default class SearchService {
 				config.search_term,
 				vendorCategoryIdentifier,
 				vendorId,
-				config.categoryId,
+				config.category_id,
 				configId
 			);
 
