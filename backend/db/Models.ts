@@ -204,6 +204,7 @@ export class CheapestProduct extends Model {
 			autoIncrement: true,
 			primaryKey: true,
 		},
+		current_price: DataTypes.DECIMAL,
 		created_at: DataTypes.DATETIME,
 	};
 

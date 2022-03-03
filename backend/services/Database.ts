@@ -128,9 +128,9 @@ export class DatabaseService {
 
 		if (!sortedOutProducts.length) throw new RangeError("Found no product with a price");
 
-		const cheapestProductId = sortedOutProducts.reduce((previous, current) =>
+		const cheapestProduct = sortedOutProducts.reduce((previous, current) =>
 			previous.price < current.price ? previous : current
-		).id;
+		);
 
 		const search_frequency = (
 			(await Config.select("search_frequency").find(configId)) as unknown as { search_frequency: string }
@@ -142,8 +142,9 @@ export class DatabaseService {
 
 		await CheapestProduct.create({
 			config_id: configId,
-			product_id: cheapestProductId,
+			product_id: cheapestProduct.id,
 			created_at: created_at.toISOString().slice(0, 19).replace("T", " "),
+			current_price: cheapestProduct.price,
 		});
 	}
 
