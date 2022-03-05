@@ -32,9 +32,7 @@ const CheapestProductChart: FC<{ configId: number }> = (props) => {
 				callbacks: {
 					title: (context: any) => context[0].dataset.data[context[0].dataIndex].productName,
 					afterTitle: (context: any) => context[0].dataset.data[context[0].dataIndex].brandName,
-					label: (context: any) => {
-						return context[0].dataset.data[context[0].dataIndex].brandName;
-					},
+					label: (context: any) => context.dataset.data[context.dataIndex].brandName,
 				},
 			},
 		},
