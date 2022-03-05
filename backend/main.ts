@@ -17,9 +17,7 @@ const port = 8080;
 const app = new Application();
 const router = new Router();
 let cwd = Deno.cwd();
-console.log(cwd);
-cwd = cwd.substring(0, cwd.lastIndexOf("\\") + 1);
-console.log(cwd);
+cwd = cwd === "/" ? cwd + "app" : cwd.substring(0, cwd.lastIndexOf("\\") + 1);
 
 router.get("/", async (context) => {
 	const body = await Deno.readTextFile(`${cwd}/frontend/build/index.html`);
