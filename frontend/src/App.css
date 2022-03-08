@@ -1,5 +1,7 @@
 .App {
+	background-color: rgb(240, 242, 245);
 	display: grid;
+	grid-row-gap: 1em;
 	grid-template-areas:
 		"heading refresh settings"
 		"content content content";
@@ -9,7 +11,7 @@
 	width: 100vw;
 }
 
-.App > h1 {
+.App > span {
 	background-color: #282c34;
 	color: white;
 	grid-area: heading;
@@ -31,22 +33,18 @@
 	grid-area: content;
 }
 
-.App-header {
-	background-color: #282c34;
-	display: flex;
-	font-size: calc(10px + 2vmin);
-	color: white;
+.App > span {
+	font-size: 2em;
+	padding: 0.25em;
+	text-align: center;
 }
 
-.App-link {
-	color: #61dafb;
+.card {
+	background-color: rgb(255, 255, 255);
+	border: 0px solid rgba(0, 0, 0, 0.125);
+	border-radius: 0.75rem;
+	box-shadow: rgba(0, 0, 0, 0.1) 0rem 0.25rem 0.375rem -0.0625rem, rgba(0, 0, 0, 0.06) 0rem 0.125rem 0.25rem -0.0625rem;
 }
 
-@keyframes App-logo-spin {
-	from {
-		transform: rotate(0deg);
-	}
-	to {
-		transform: rotate(360deg);
-	}
+.card-header {
 }

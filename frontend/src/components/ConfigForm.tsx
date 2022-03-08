@@ -1,30 +1,24 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { Dispatch, SetStateAction, useContext, useEffect, useState } from "react";
 import { FC } from "react";
 import { VendorContext } from "../App";
 import { ICategory, IConfig } from "../interfaces/config";
 import { serverUrl } from "../helpers/serverUrl";
 
-const ConfigForm: FC<{ configId: number | null; onSubmit: Function }> = (props) => {
+const ConfigForm: FC<{ initialConfig: IConfig | null; onSubmit: Function }> = (props) => {
 	const vendors = useContext(VendorContext);
-
-	const [config, setConfig] = useState({} as IConfig);
+	const [config, setConfig] = useState(props.initialConfig ? Object.assign(props.initialConfig) : ({} as IConfig));
 	const [categories, setCategories] = useState(new Array<ICategory>());
 
 	useEffect(() => {
-		const getConfig = async () => {
-			setConfig((await (await fetch(`${serverUrl}/config/${props.configId}`)).json()) as IConfig);
-		};
-
 		const getCategories = async () => {
 			setCategories((await (await fetch(`${serverUrl}/category`)).json()) as ICategory[]);
 		};
 
-		if (props.configId) getConfig();
 		getCategories();
 	}, []);
 
 	const handleCheckbox = (vendorId: number) => {
-		const newSelectedVendors = config.selected_vendors ? [...config.selected_vendors] : [];
+		const newSelectedVendors = config.selected_vendors ? [config.selected_vendors] : [];
 		if (newSelectedVendors.includes(vendorId)) newSelectedVendors.splice(newSelectedVendors.indexOf(vendorId), 1);
 		else newSelectedVendors.push(vendorId);
 
@@ -32,7 +26,7 @@ const ConfigForm: FC<{ configId: number | null; onSubmit: Function }> = (props) 
 	};
 
 	const handleChange = (key: string, value: string | number[] | number) => {
-		setConfig((previousConfig) => ({
+		setConfig((previousConfig: IConfig) => ({
 			...previousConfig,
 			[key]: value,
 		}));
@@ -107,7 +101,7 @@ const ConfigForm: FC<{ configId: number | null; onSubmit: Function }> = (props) 
 				))}
 			</div>
 
-			<input type="submit" className="button button-submit" value={props.configId ? "Save" : "Create"}></input>
+			<input type="submit" className="button button-submit" value={config.id ? "Save" : "Create"}></input>
 		</form>
 	);
 };

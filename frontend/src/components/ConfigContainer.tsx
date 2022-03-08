@@ -6,18 +6,20 @@ import ConfigForm from "./ConfigForm";
 import { serverUrl } from "../helpers/serverUrl";
 
 const ConfigContainer: FC = () => {
-	const [configs, setConfigs] = useState(new Array<{ id: number }>());
+	const [configs, setConfigs] = useState(new Array<IConfig>());
+	const [settingsVisible, setSettingsVisible] = useState([{}] as [{ id: number; visible: boolean }]);
 
 	useEffect(() => {
 		const getConfigs = async () => {
-			setConfigs((await (await fetch(`${serverUrl}/config`)).json()) as [{ id: number }]);
+			const data = (await (await fetch(`${serverUrl}/config`)).json()) as IConfig[];
+			setConfigs(data);
 		};
 
 		getConfigs();
 	}, []);
 
 	const onSubmit = async (config: IConfig) => {
-		let data: [{ id: number }];
+		let data: IConfig[];
 
 		if (config.id) {
 			data = (await (
@@ -28,7 +30,7 @@ const ConfigContainer: FC = () => {
 					},
 					body: JSON.stringify(config),
 				})
-			).json()) as [{ id: number }];
+			).json()) as IConfig[];
 		} else {
 			data = (await (
 				await fetch(`${serverUrl}/config`, {
@@ -38,7 +40,7 @@ const ConfigContainer: FC = () => {
 					},
 					body: JSON.stringify(config),
 				})
-			).json()) as [{ id: number }];
+			).json()) as IConfig[];
 		}
 
 		setConfigs(data);
@@ -48,14 +50,19 @@ const ConfigContainer: FC = () => {
 		<div>
 			{configs.map((config) => {
 				return (
-					<section>
+					<section className="card">
+						<div className="card-header">
+							<h1>{config.search_term}</h1>
+							<button className="button button-refresh">refresh</button>
+							<button className="button button-refresh">settings</button>
+						</div>
 						<CheapestProductChart key={config.id} configId={config.id}></CheapestProductChart>
-						<ConfigForm key={config.id} configId={config.id} onSubmit={onSubmit}></ConfigForm>
+						<ConfigForm key={config.id} initialConfig={config} onSubmit={onSubmit}></ConfigForm>
 					</section>
 				);
 			})}
 
-			<ConfigForm configId={null} onSubmit={onSubmit}></ConfigForm>
+			<ConfigForm initialConfig={null} onSubmit={onSubmit}></ConfigForm>
 		</div>
 	);
 };

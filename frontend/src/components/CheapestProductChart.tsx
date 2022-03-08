@@ -16,7 +16,6 @@ import { serverUrl } from "../helpers/serverUrl";
 ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend);
 
 const CheapestProductChart: FC<{ configId: number }> = (props) => {
-	const [config, setConfig] = useState({} as IConfig);
 	const [chartData, setchartData] = useState(
 		{} as {
 			datasets: [{ data: IProduct[] }];
@@ -45,7 +44,6 @@ const CheapestProductChart: FC<{ configId: number }> = (props) => {
 
 	useEffect(() => {
 		const getData = async () => {
-			setConfig((await (await fetch(`${serverUrl}/config/${props.configId}`)).json()) as IConfig);
 			const cheapestProducts = (await (
 				await fetch(`${serverUrl}/cheapest-products/${props.configId}`)
 			).json()) as IProduct[];
