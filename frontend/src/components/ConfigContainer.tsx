@@ -59,7 +59,7 @@ const ConfigContainer: FC = () => {
 	};
 
 	return (
-		<div>
+		<div className="app-body">
 			{configs.map((config, index) => {
 				return (
 					<section key={config.id} className="card">

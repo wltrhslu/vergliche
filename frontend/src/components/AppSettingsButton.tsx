@@ -4,11 +4,7 @@ const AppSettingsButton: FC<{ onClick: Function }> = ({ onClick }) => {
 		onClick(true);
 	};
 
-	return (
-		<button className="button button-settings" onClick={onClickHandler}>
-			settings
-		</button>
-	);
+	return <button className="button button-settings" onClick={onClickHandler}></button>;
 };
 
 export default AppSettingsButton;

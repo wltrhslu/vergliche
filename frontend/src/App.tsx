@@ -19,10 +19,12 @@ const App: FC = () => {
 
 	return (
 		<div className="App">
-			<span>vergliche</span>
 			<VendorContext.Provider value={vendors}>
-				<AppSettingsButton onClick={setIsModalOpen} />
-				<button className="button button-refresh"></button>
+				<div className="app-header">
+					<span>vergliche</span>
+					<button className="button button-refresh"></button>
+					<AppSettingsButton onClick={setIsModalOpen} />
+				</div>
 				<ConfigContainer></ConfigContainer>
 				<AppSettings state={isModalOpen} setState={setIsModalOpen}></AppSettings>
 			</VendorContext.Provider>
