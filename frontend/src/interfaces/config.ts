@@ -23,7 +23,7 @@ export interface IProduct {
 	created_at: string | Date;
 	id: number;
 	manufacturerNumber: string;
-	price: string;
+	current_price: string;
 	productId: number;
 	productName: string;
 	productUrl: string;

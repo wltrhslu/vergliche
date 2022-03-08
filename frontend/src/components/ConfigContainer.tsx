@@ -70,6 +70,7 @@ const ConfigContainer: FC = () => {
 						</div>
 						<div className="card-body">
 							<CheapestProductChart configId={config.id}></CheapestProductChart>
+							<div className="tooltip"></div>
 							<ConfigForm initialConfig={config} onSubmit={onSubmit} visible={formVisible[index].visible}></ConfigForm>
 						</div>
 					</section>

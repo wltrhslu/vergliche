@@ -71,6 +71,59 @@
 	position: relative;
 }
 
+.tooltip {
+	background-color: rgba(0, 0, 0, 0.8);
+	border: 0px solid rgba(0, 0, 0, 0.8);
+	border-radius: 0.75rem;
+	box-shadow: rgba(0, 0, 0, 0.1) 0rem 0.25rem 0.375rem -0.0625rem, rgba(0, 0, 0, 0.06) 0rem 0.125rem 0.25rem -0.0625rem;
+	color: white;
+	opacity: 0;
+	padding: 1em;
+	pointer-events: none;
+	position: absolute;
+	transform: translate(-50%, 0);
+	transition: all 0.1s ease;
+	width: 44ch;
+	z-index: 1;
+}
+
+.tooltip::before {
+	border-left: 10px solid transparent;
+	border-right: 10px solid transparent;
+	border-bottom: 10px solid rgba(0, 0, 0, 0.8);
+	content: "";
+	display: block;
+	height: 0;
+	left: calc(50% - 10px);
+	position: absolute;
+	top: -10px;
+	width: 0;
+}
+
+.tooltip h3 {
+	margin: 0;
+}
+
+.tooltip .table {
+	display: grid;
+	grid-template-columns: 1fr 1fr;
+	grid-gap: 0.25em;
+	margin-top: 0.25em;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+
+.tooltip label {
+	font-weight: bold;
+}
+
+.tooltip a {
+	color: white;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+
 .button {
 	aspect-ratio: 1;
 	background-repeat: no-repeat;

@@ -15,6 +15,7 @@ import Zoom from "chartjs-plugin-zoom";
 import "chartjs-adapter-date-fns";
 import { Line } from "react-chartjs-2";
 import { serverUrl } from "../helpers/serverUrl";
+import { externalTooltipHandler } from "../helpers/customTooltip";
 
 ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend, TimeScale, Zoom);
 
@@ -25,35 +26,35 @@ const CheapestProductChart: FC<{ configId: number }> = (props) => {
 		}
 	);
 
-	const options: any = {
-		scales: {
-			x: {
-				position: "bottom",
-				type: "time",
-				ticks: {
-					autoSkip: true,
-					autoSkipPadding: 50,
-					maxRotation: 0,
-				},
-				time: {
-					displayFormats: {
-						hour: "HH:mm",
-						minute: "HH:mm",
-						second: "HH:mm:ss",
-					},
+	const scales = {
+		x: {
+			position: "bottom",
+			type: "time",
+			ticks: {
+				autoSkip: true,
+				autoSkipPadding: 50,
+				maxRotation: 0,
+			},
+			time: {
+				displayFormats: {
+					hour: "HH:mm",
+					minute: "HH:mm",
+					second: "HH:mm:ss",
 				},
 			},
 		},
+	};
+
+	const options: any = {
+		scales: scales,
 		plugins: {
 			legend: {
 				display: false,
 			},
 			tooltip: {
-				callbacks: {
-					title: (context: any) => context[0].dataset.data[context[0].dataIndex].productName,
-					afterTitle: (context: any) => context[0].dataset.data[context[0].dataIndex].brandName,
-					label: (context: any) => context.dataset.data[context.dataIndex].brandName,
-				},
+				enabled: false,
+				position: "nearest",
+				external: externalTooltipHandler,
 			},
 			zoom: {
 				pan: {
@@ -70,7 +71,7 @@ const CheapestProductChart: FC<{ configId: number }> = (props) => {
 		},
 		parsing: {
 			xAxisKey: "created_at",
-			yAxisKey: "price",
+			yAxisKey: "current_price",
 		},
 		responsive: true,
 	};
