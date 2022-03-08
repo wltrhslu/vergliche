@@ -10,6 +10,7 @@ import {
 	Tooltip,
 	Legend,
 } from "chart.js";
+import "chartjs-plugin-zoom";
 import { Line } from "react-chartjs-2";
 import { serverUrl } from "../helpers/serverUrl";
 
@@ -32,6 +33,14 @@ const CheapestProductChart: FC<{ configId: number }> = (props) => {
 					title: (context: any) => context[0].dataset.data[context[0].dataIndex].productName,
 					afterTitle: (context: any) => context[0].dataset.data[context[0].dataIndex].brandName,
 					label: (context: any) => context.dataset.data[context.dataIndex].brandName,
+				},
+			},
+			zoom: {
+				zoom: {
+					wheel: {
+						enabled: true,
+					},
+					mode: "x",
 				},
 			},
 		},
