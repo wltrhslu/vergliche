@@ -19,7 +19,7 @@ export default {
 						selected_vendors: config.selected_vendors.join(","),
 						category_id: config.category_id,
 					},
-				])) as unknown as {lastInsertId: number}
+				])) as unknown as { lastInsertId: number }
 			).lastInsertId
 		);
 
@@ -40,7 +40,7 @@ export default {
 			};
 		}
 
-		return await Config.select("id").all();
+		return await Config.select(...fields).all();
 	},
 
 	async updateConfig(config: IConfig) {
