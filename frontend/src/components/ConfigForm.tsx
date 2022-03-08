@@ -4,7 +4,7 @@ import { VendorContext } from "../App";
 import { ICategory, IConfig } from "../interfaces/config";
 import { serverUrl } from "../helpers/serverUrl";
 
-const ConfigForm: FC<{ initialConfig: IConfig | null; onSubmit: Function }> = (props) => {
+const ConfigForm: FC<{ initialConfig: IConfig | null; onSubmit: Function; visible: boolean }> = (props) => {
 	const vendors = useContext(VendorContext);
 	const [config, setConfig] = useState(props.initialConfig ? Object.assign(props.initialConfig) : ({} as IConfig));
 	const [categories, setCategories] = useState(new Array<ICategory>());
@@ -39,7 +39,10 @@ const ConfigForm: FC<{ initialConfig: IConfig | null; onSubmit: Function }> = (p
 	};
 
 	return (
-		<form className="form form-config" onSubmit={(event) => onFormSubmit(event)}>
+		<form
+			className={props.visible ? "form form-config" : "form form-config hidden"}
+			onSubmit={(event) => onFormSubmit(event)}
+		>
 			<fieldset>
 				<label htmlFor="search_term">Searchterm</label>
 				<input
@@ -72,15 +75,11 @@ const ConfigForm: FC<{ initialConfig: IConfig | null; onSubmit: Function }> = (p
 					onChange={(event) => {
 						handleChange(event.currentTarget.name, parseInt(event.currentTarget.value));
 					}}
+					value={categories.find((category) => category.id === config.category_id)?.id}
 				>
 					{config.id ? null : <option id="null">Select Category</option>}
 					{categories.map((category) => (
-						<option
-							key={category.id}
-							id={category.id.toString()}
-							selected={category.id === config.category_id ? true : false}
-							value={category.id}
-						>
+						<option key={category.id} id={category.id.toString()} value={category.id}>
 							{category.category_name}
 						</option>
 					))}

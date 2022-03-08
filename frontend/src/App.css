@@ -1,13 +1,12 @@
 .App {
 	background-color: rgb(240, 242, 245);
 	display: grid;
-	grid-row-gap: 1em;
 	grid-template-areas:
 		"heading refresh settings"
 		"content content content";
 	grid-template-columns: 1fr auto auto;
 	grid-template-rows: auto 1fr;
-	height: 100vh;
+	min-height: 100vh;
 	width: 100vw;
 }
 
@@ -28,9 +27,10 @@
 .App > div {
 	display: grid;
 	grid-gap: 1em;
-	grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
-	grid-template-rows: repeat(auto-fit, 250px);
+	grid-template-columns: repeat(auto-fit, minmax(450px, 1fr));
+	grid-template-rows: repeat(auto-fit, 350px);
 	grid-area: content;
+	margin: 1em;
 }
 
 .App > span {
@@ -44,7 +44,80 @@
 	border: 0px solid rgba(0, 0, 0, 0.125);
 	border-radius: 0.75rem;
 	box-shadow: rgba(0, 0, 0, 0.1) 0rem 0.25rem 0.375rem -0.0625rem, rgba(0, 0, 0, 0.06) 0rem 0.125rem 0.25rem -0.0625rem;
+	display: grid;
+	grid-template-rows: auto 1fr;
+}
+
+.card canvas {
+	grid-column: 1 / -1;
+	margin: 1em;
 }
 
 .card-header {
+	border-bottom: 1px solid rgba(204, 204, 204, 0.35);
+	display: grid;
+	grid-template-columns: 1fr 24px 24px;
+	padding: 1em;
+}
+
+.card-header h2 {
+	margin: 0;
+	font-size: 18px;
+	font-weight: normal;
+	color: #111;
+}
+
+.card-body {
+	position: relative;
+}
+
+.button {
+	aspect-ratio: 1;
+	background-repeat: no-repeat;
+	background-position: left top;
+	border: none;
+	background-color: transparent;
+	cursor: pointer;
+	height: 24px;
+	padding: 0;
+}
+
+.button-refresh {
+	background-image: url("/public/img/icons/refresh_white.png");
+}
+
+.button-refresh-black {
+	background-image: url("/public/img/icons/refresh_black.png");
+}
+
+.button-settings {
+	background-image: url("/public/img/icons/settings_white.png");
+}
+
+.button-settings-black {
+	background-image: url("/public/img/icons/settings_black.png");
+}
+
+form {
+	background-color: rgba(255, 255, 255, 0.9);
+	border: 1px solid rgba(0, 0, 0, 0.125);
+	border-radius: 0.75rem;
+	display: flex;
+	flex-direction: column;
+	inset: 0 0 0 0;
+	justify-content: center;
+	margin: 1em;
+	opacity: 1;
+	position: absolute;
+	transition: all 0.2s ease-in-out;
+	visibility: visible;
+}
+
+fieldset {
+	border: none;
+}
+
+form.hidden {
+	opacity: 0;
+	visibility: hidden;
 }

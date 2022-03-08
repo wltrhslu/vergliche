@@ -7,12 +7,15 @@ import { serverUrl } from "../helpers/serverUrl";
 
 const ConfigContainer: FC = () => {
 	const [configs, setConfigs] = useState(new Array<IConfig>());
-	const [settingsVisible, setSettingsVisible] = useState([{}] as [{ id: number; visible: boolean }]);
+	const [formVisible, setFormVisible] = useState(new Array<{ id: number; visible: boolean }>());
 
 	useEffect(() => {
 		const getConfigs = async () => {
 			const data = (await (await fetch(`${serverUrl}/config`)).json()) as IConfig[];
 			setConfigs(data);
+
+			const initialFormState = data.map((config) => ({ id: config.id, visible: false }));
+			setFormVisible(initialFormState);
 		};
 
 		getConfigs();
@@ -46,23 +49,34 @@ const ConfigContainer: FC = () => {
 		setConfigs(data);
 	};
 
+	const updateVisibility = (id: number) => {
+		const index = formVisible.findIndex((x) => x.id === id);
+		setFormVisible([
+			...formVisible.slice(0, index),
+			Object.assign({}, formVisible[index], { visible: !formVisible[index].visible }),
+			...formVisible.slice(index + 1),
+		]);
+	};
+
 	return (
 		<div>
-			{configs.map((config) => {
+			{configs.map((config, index) => {
 				return (
-					<section className="card">
+					<section key={config.id} className="card">
 						<div className="card-header">
-							<h1>{config.search_term}</h1>
-							<button className="button button-refresh">refresh</button>
-							<button className="button button-refresh">settings</button>
+							<h2>{config.search_term}</h2>
+							<button className="button button-refresh-black"></button>
+							<button className="button button-settings-black" onClick={() => updateVisibility(config.id)}></button>
 						</div>
-						<CheapestProductChart key={config.id} configId={config.id}></CheapestProductChart>
-						<ConfigForm key={config.id} initialConfig={config} onSubmit={onSubmit}></ConfigForm>
+						<div className="card-body">
+							<CheapestProductChart configId={config.id}></CheapestProductChart>
+							<ConfigForm initialConfig={config} onSubmit={onSubmit} visible={formVisible[index].visible}></ConfigForm>
+						</div>
 					</section>
 				);
 			})}
 
-			<ConfigForm initialConfig={null} onSubmit={onSubmit}></ConfigForm>
+			{/* <ConfigForm initialConfig={null} onSubmit={onSubmit}></ConfigForm> */}
 		</div>
 	);
 };

@@ -22,7 +22,7 @@ const App: FC = () => {
 			<span>vergliche</span>
 			<VendorContext.Provider value={vendors}>
 				<AppSettingsButton onClick={setIsModalOpen} />
-				<button className="button button-refresh">refresh all</button>
+				<button className="button button-refresh"></button>
 				<ConfigContainer></ConfigContainer>
 				<AppSettings state={isModalOpen} setState={setIsModalOpen}></AppSettings>
 			</VendorContext.Provider>
