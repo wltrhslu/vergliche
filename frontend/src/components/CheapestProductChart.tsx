@@ -9,12 +9,14 @@ import {
 	Title,
 	Tooltip,
 	Legend,
+	TimeScale,
 } from "chart.js";
-import "chartjs-plugin-zoom";
+import Zoom from "chartjs-plugin-zoom";
+import "chartjs-adapter-date-fns";
 import { Line } from "react-chartjs-2";
 import { serverUrl } from "../helpers/serverUrl";
 
-ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend);
+ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend, TimeScale, Zoom);
 
 const CheapestProductChart: FC<{ configId: number }> = (props) => {
 	const [chartData, setchartData] = useState(
@@ -24,6 +26,24 @@ const CheapestProductChart: FC<{ configId: number }> = (props) => {
 	);
 
 	const options: any = {
+		scales: {
+			x: {
+				position: "bottom",
+				type: "time",
+				ticks: {
+					autoSkip: true,
+					autoSkipPadding: 50,
+					maxRotation: 0,
+				},
+				time: {
+					displayFormats: {
+						hour: "HH:mm",
+						minute: "HH:mm",
+						second: "HH:mm:ss",
+					},
+				},
+			},
+		},
 		plugins: {
 			legend: {
 				display: false,
@@ -36,6 +56,10 @@ const CheapestProductChart: FC<{ configId: number }> = (props) => {
 				},
 			},
 			zoom: {
+				pan: {
+					enabled: true,
+					mode: "x",
+				},
 				zoom: {
 					wheel: {
 						enabled: true,
@@ -60,7 +84,7 @@ const CheapestProductChart: FC<{ configId: number }> = (props) => {
 			const data = cheapestProducts.map((product) => {
 				return {
 					...product,
-					created_at: new Date(product.created_at).toLocaleString(),
+					created_at: new Date(product.created_at),
 				};
 			});
 

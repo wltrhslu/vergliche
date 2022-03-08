@@ -20,7 +20,7 @@ export interface ICategory {
 export interface IProduct {
 	availability: string;
 	brandName: string;
-	created_at: string;
+	created_at: string | Date;
 	id: number;
 	manufacturerNumber: string;
 	price: string;
