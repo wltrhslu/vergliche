@@ -140,7 +140,7 @@ export class DatabaseService {
 		const created_at = new Date();
 		created_at.setMinutes(parseInt(minutes), 0, 0);
 
-		await CheapestProduct.create({
+		return await CheapestProduct.create({
 			config_id: configId,
 			product_id: cheapestProduct.id,
 			created_at: created_at.toISOString().slice(0, 19).replace("T", " "),

@@ -55,7 +55,8 @@ export default class SearchService {
 		}
 
 		try {
-			await DatabaseService.setCheapestProduct(configId);
+			const lastInsertedId = await DatabaseService.setCheapestProduct(configId);
+			console.log(lastInsertedId);
 		} catch (error) {
 			console.log(error);
 		}
