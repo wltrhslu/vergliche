@@ -97,6 +97,7 @@ export class DatabaseService {
 		const fields = [
 			CheapestProduct.field("id"),
 			CheapestProduct.field("created_at"),
+			CheapestProduct.field("current_price"),
 			Product.field("updated_at"),
 			"vendor_name",
 			"brand_name",
@@ -106,7 +107,6 @@ export class DatabaseService {
 			"availability",
 			"product_name",
 			"product_id",
-			"price",
 		];
 		return await CheapestProduct.where(CheapestProduct.field("config_id"), configId)
 			.join(Product, Product.field("id"), CheapestProduct.field("product_id"))
