@@ -1,5 +1,5 @@
 export interface IConfig {
-	id?: number;
+	id: number;
 	search_term?: string;
 	search_frequency?: `${number}:${number}`;
 	selected_vendors: number[];
