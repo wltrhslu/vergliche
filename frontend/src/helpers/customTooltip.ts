@@ -27,6 +27,14 @@ export const externalTooltipHandler = (context: {
 	tooltipElement.style.left = positionX + tooltip.caretX + "px";
 	tooltipElement.style.top = positionY + tooltip.caretY + 10 + "px";
 	tooltipElement.style.opacity = "1";
+
+	tooltipElement.addEventListener("mouseover", () => {
+		tooltipElement.style.opacity = "1";
+	});
+
+	tooltipElement.addEventListener("mouseout", () => {
+		tooltipElement.style.opacity = "0";
+	});
 };
 
 const getTemplate = (product: IProduct) => `
@@ -34,7 +42,7 @@ const getTemplate = (product: IProduct) => `
 	<div class="table">
 		<label>Brand:</label><span>${product.brandName}</span>
 		<label>Vendor:</label><span>${product.vendorName}</span>
-		<label>Url:</label><a href="${product.productUrl}">${product.productUrl}</a>
+		<label>Url:</label><a target="_blank" href="${product.productUrl}">${product.productUrl}</a>
 		<label>Current Price:</label><span>${product.current_price}</span>
 		<label>Recorded At:</label><span>${product.created_at}</span>
 	</div>
