@@ -17,6 +17,5 @@ export default router.get("/cheapest-products/:id", async (context) => {
 	} catch (error) {
 		context.response.status = Status.InternalServerError;
 		context.response.body = JSON.stringify(error, Object.getOwnPropertyNames(error));
-		console.log(error);
 	}
 });
