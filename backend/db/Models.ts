@@ -11,7 +11,6 @@ export class Vendor extends Model {
 			primaryKey: true,
 		},
 		vendor_name: DataTypes.STRING,
-		vendor_url: DataTypes.STRING,
 	};
 
 	static products() {
@@ -26,7 +25,9 @@ export class Vendor extends Model {
 		await Vendor.create([
 			{
 				vendor_name: "Digitec",
-				vendor_url: "https://www.digitec.ch/api/graphql",
+			},
+			{
+				vendor_name: "Steg",
 			},
 		]);
 	}
