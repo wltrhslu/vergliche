@@ -70,7 +70,7 @@ export class Digitec implements ISearchSubService {
 	`;
 
 	getServiceName() {
-		return "Digitec";
+		return this.constructor.name;
 	}
 
 	async searchProducts(
