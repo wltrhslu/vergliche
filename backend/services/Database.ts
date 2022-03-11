@@ -120,18 +120,10 @@ export class DatabaseService {
 	static async setCheapestProduct(configId: number) {
 		const products = (await Product.where("config_id", configId)
 			.orderBy("price")
-			.select("id", "price")
-			.get()) as unknown as [{ id: number; price: string }];
+			.select("id", "price", "availability", "updated_at")
+			.get()) as unknown as [{ id: number; price: string; availability: string | null; updatedAt: string }];
 
 		if (!products.length) throw new RangeError(`No Products found with configId: ${configId}`);
-
-		const sortedOutProducts = products.filter((product) => product.price !== null);
-
-		if (!sortedOutProducts.length) throw new RangeError("No products found with a price");
-
-		const cheapestProduct = sortedOutProducts.reduce((previous, current) =>
-			parseFloat(previous.price) < parseFloat(current.price) ? previous : current
-		);
 
 		const search_frequency = (
 			(await Config.select("search_frequency").find(configId)) as unknown as { search_frequency: string }
@@ -140,6 +132,21 @@ export class DatabaseService {
 
 		const created_at = new Date();
 		created_at.setMinutes(parseInt(minutes), 0, 0);
+
+		const sortedOutProducts = products.filter((product) => {
+			const updated_at = new Date(product.updatedAt);
+			updated_at.setMinutes(parseInt(minutes), 0, 0);
+			//utc?
+			updated_at.setHours(updated_at.getHours() + 1);
+
+			return product.price !== null && !!product.availability && created_at.getTime() === updated_at.getTime();
+		});
+
+		if (!sortedOutProducts.length) throw new RangeError("No products found with a price");
+
+		const cheapestProduct = sortedOutProducts.reduce((previous, current) =>
+			parseFloat(previous.price) < parseFloat(current.price) ? previous : current
+		);
 
 		return await CheapestProduct.create({
 			config_id: configId,
