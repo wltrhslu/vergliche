@@ -136,8 +136,9 @@ export class DatabaseService {
 		const sortedOutProducts = products.filter((product) => {
 			const updated_at = new Date(product.updatedAt);
 			updated_at.setMinutes(parseInt(minutes), 0, 0);
-			//utc?
-			updated_at.setHours(updated_at.getHours() + 1);
+
+			//debug
+			if (Deno.cwd() !== "/") updated_at.setHours(updated_at.getHours() + 1);
 
 			return product.price !== null && !!product.availability && created_at.getTime() === updated_at.getTime();
 		});
