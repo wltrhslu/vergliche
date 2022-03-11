@@ -121,16 +121,16 @@ export class DatabaseService {
 		const products = (await Product.where("config_id", configId)
 			.orderBy("price")
 			.select("id", "price")
-			.get()) as unknown as [{ id: number; price: number }];
+			.get()) as unknown as [{ id: number; price: string }];
 
 		if (!products.length) throw new RangeError(`No Products found with configId: ${configId}`);
 
 		const sortedOutProducts = products.filter((product) => product.price !== null);
 
-		if (!sortedOutProducts.length) throw new RangeError("Found no product with a price");
+		if (!sortedOutProducts.length) throw new RangeError("No products found with a price");
 
 		const cheapestProduct = sortedOutProducts.reduce((previous, current) =>
-			previous.price < current.price ? previous : current
+			parseFloat(previous.price) < parseFloat(current.price) ? previous : current
 		);
 
 		const search_frequency = (
