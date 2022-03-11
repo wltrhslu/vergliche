@@ -112,6 +112,7 @@ export class DatabaseService {
 			.join(Product, Product.field("id"), CheapestProduct.field("product_id"))
 			.join(Vendor, Vendor.field("id"), Product.field("vendor_id"))
 			.join(Brand, Brand.field("id"), Product.field("brand_id"))
+			.orderBy(CheapestProduct.field("created_at"))
 			.select(...fields)
 			.get();
 	}
