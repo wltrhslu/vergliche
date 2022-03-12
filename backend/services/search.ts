@@ -10,7 +10,7 @@ export default class SearchService {
 	sseTargets: { configId: number; target: ServerSentEventTarget }[];
 
 	constructor() {
-		this.searchServices = [new Digitec(), new StegElectronics()];
+		this.searchServices = [new Digitec()];
 		this.sseTargets = new Array<{ configId: number; target: ServerSentEventTarget }>();
 	}
 
