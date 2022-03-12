@@ -1,4 +1,4 @@
-import { DOMParser, HTMLDocument } from "https://deno.land/x/deno_dom@v0.1.21-alpha/deno-dom-native.ts";
+import { DOMParser } from "https://deno.land/x/deno_dom@v0.1.21-alpha/deno-dom-native.ts";
 import { ISearchSubService } from "../interfaces/search.ts";
 import { IProduct } from "../interfaces/database.ts";
 import { DatabaseService } from "./Database.ts";
