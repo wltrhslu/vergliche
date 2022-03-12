@@ -1,5 +1,5 @@
 import { Digitec } from "./digitec.ts";
-// import { StegElectronics } from "./steg.ts";
+import { StegElectronics } from "./steg.ts";
 import { cron } from "https://deno.land/x/deno_cron@v1.0.0/cron.ts";
 import { DatabaseService } from "./Database.ts";
 import { ISearchSubService } from "../interfaces/search.ts";
@@ -10,7 +10,7 @@ export default class SearchService {
 	sseTargets: { configId: number; target: ServerSentEventTarget }[];
 
 	constructor() {
-		this.searchServices = [new Digitec()];
+		this.searchServices = [new Digitec(), new StegElectronics()];
 		this.sseTargets = new Array<{ configId: number; target: ServerSentEventTarget }>();
 	}
 
