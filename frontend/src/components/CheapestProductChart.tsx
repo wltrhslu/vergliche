@@ -94,7 +94,20 @@ const CheapestProductChart: FC<{ configId: number }> = (props) => {
 
 		const sse = new EventSource(`${serverUrl}/sse/${props.configId}`, { withCredentials: true });
 
-		sse.onmessage = (e) => getData();
+		sse.onmessage = (event: MessageEvent) => {
+			setchartData((previousData) => {
+				debugger;
+				const product = JSON.parse(event.data) as IProduct;
+				product.created_at = new Date(product.created_at);
+
+				const data = previousData.datasets[0].data;
+				data.push(product);
+				return {
+					datasets: [{ data }],
+				};
+			});
+		};
+
 		sse.onerror = () => {
 			sse.close();
 		};

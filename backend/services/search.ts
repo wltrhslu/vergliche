@@ -54,15 +54,32 @@ export default class SearchService {
 			}
 		}
 
+		let lastInsertId = null;
+
 		try {
-			const lastInsertedId = await DatabaseService.setCheapestProduct(configId);
-			console.log(lastInsertedId);
+			lastInsertId = (
+				(await DatabaseService.setCheapestProduct(configId)) as unknown as {
+					affectedRows: number;
+					lastInsertId: number;
+				}
+			).lastInsertId;
 		} catch (error) {
 			console.log(error);
 		}
 
-		this.sseTargets
-			.filter((target) => (target.configId = configId))
-			.map((target) => target.target.dispatchMessage("update"));
+		let cheapestProduct: null | any = null;
+		if (lastInsertId) cheapestProduct = await DatabaseService.getCheapestProduct(lastInsertId);
+
+		if (cheapestProduct) {
+			try {
+				this.sseTargets
+					.filter((target) => (target.configId = configId))
+					.map((target) => {
+						target.target.dispatchMessage(cheapestProduct);
+					});
+			} catch (error) {
+				console.log(error);
+			}
+		}
 	}
 }

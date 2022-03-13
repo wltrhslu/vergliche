@@ -93,6 +93,31 @@ export class DatabaseService {
 		return (await Config.select("id").all()) as IConfig[];
 	}
 
+	static async getCheapestProduct(lastInsertId: number) {
+		const fields = [
+			CheapestProduct.field("id"),
+			CheapestProduct.field("created_at"),
+			CheapestProduct.field("current_price"),
+			Product.field("updated_at"),
+			"vendor_name",
+			"brand_name",
+			"rating",
+			"manufacturer_number",
+			"product_url",
+			"availability",
+			"product_name",
+			"product_id",
+		];
+
+		return await CheapestProduct.where(CheapestProduct.field("id"), lastInsertId)
+			.join(Product, Product.field("id"), CheapestProduct.field("product_id"))
+			.join(Vendor, Vendor.field("id"), Product.field("vendor_id"))
+			.join(Brand, Brand.field("id"), Product.field("brand_id"))
+			.orderBy(CheapestProduct.field("created_at"))
+			.select(...fields)
+			.first();
+	}
+
 	static async getCheapestProducts(configId: number) {
 		const fields = [
 			CheapestProduct.field("id"),
