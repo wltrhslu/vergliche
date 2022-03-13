@@ -96,7 +96,6 @@ const CheapestProductChart: FC<{ configId: number }> = (props) => {
 
 		sse.onmessage = (event: MessageEvent) => {
 			setchartData((previousData) => {
-				debugger;
 				const product = JSON.parse(event.data) as IProduct;
 				product.created_at = new Date(product.created_at);
 
