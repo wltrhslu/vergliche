@@ -50,6 +50,7 @@ export class StegElectronics implements ISearchSubService {
 
 					const product = {} as IProduct;
 
+					product.ignore_cheapest = 0;
 					product.vendor_id = vendorId;
 					product.categoryId = categoryId;
 					product.config_id = configId;

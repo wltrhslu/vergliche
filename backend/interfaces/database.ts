@@ -26,6 +26,7 @@ interface IProduct {
 	product_url: string;
 	manufacturer_number: string | null;
 	rating: number | null;
+	ignore_cheapest: number;
 	vendor_id: number;
 	brand_id: number;
 	categoryId: number;

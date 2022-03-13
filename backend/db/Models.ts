@@ -168,6 +168,7 @@ export class Product extends Model {
 			type: DataTypes.DECIMAL,
 			allowNull: true,
 		},
+		ignore_cheapest: DataTypes.BOOLEAN,
 	};
 
 	static brand() {

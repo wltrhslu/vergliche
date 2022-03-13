@@ -120,8 +120,10 @@ export class DatabaseService {
 	static async setCheapestProduct(configId: number) {
 		const products = (await Product.where("config_id", configId)
 			.orderBy("price")
-			.select("id", "price", "availability", "updated_at")
-			.get()) as unknown as [{ id: number; price: string; availability: string | null; updatedAt: string }];
+			.select("id", "price", "availability", "updated_at", "ignore_cheapest")
+			.get()) as unknown as [
+			{ id: number; price: string; availability: string | null; updatedAt: string; ignore_cheapest: number }
+		];
 
 		if (!products.length) throw new RangeError(`No Products found with configId: ${configId}`);
 
@@ -134,13 +136,14 @@ export class DatabaseService {
 		created_at.setMinutes(parseInt(minutes), 0, 0);
 
 		const sortedOutProducts = products.filter((product) => {
+			if (product.ignore_cheapest || product.price === null || !product.availability) return false;
 			const updated_at = new Date(product.updatedAt);
 			updated_at.setMinutes(parseInt(minutes), 0, 0);
 
 			//debug
-			if (Deno.cwd() !== "/") updated_at.setHours(updated_at.getHours() + 1);
+			// if (Deno.cwd() !== "/") updated_at.setHours(updated_at.getHours() + 1);
 
-			return product.price !== null && !!product.availability && created_at.getTime() === updated_at.getTime();
+			return created_at.getTime() === updated_at.getTime();
 		});
 
 		if (!sortedOutProducts.length) throw new RangeError("No products found with a price");
@@ -186,6 +189,7 @@ export class DatabaseService {
 				product_url: product.product_url,
 				vendor_id: product.vendor_id,
 				rating: product.rating ?? null,
+				ignore_cheapest: product.ignore_cheapest,
 				manufacturer_number: product.manufacturer_number ?? null,
 				brand_id: product.brand_id,
 				category_id: product.categoryId,

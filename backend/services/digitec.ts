@@ -117,6 +117,7 @@ export class Digitec implements ISearchSubService {
 	private async parseData(vendorId: number, data: any, categoryId: number, configId: number): Promise<IProduct> {
 		const product = {} as IProduct;
 
+		product.ignore_cheapest = 0;
 		product.vendor_id = vendorId;
 		product.categoryId = categoryId;
 		product.config_id = configId;
