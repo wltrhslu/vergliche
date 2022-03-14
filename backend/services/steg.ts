@@ -16,7 +16,7 @@ export class StegElectronics implements ISearchSubService {
 
 	async searchProducts(
 		searchTerm: string,
-		productType: string,
+		categoryIdentifier: string,
 		vendorId: number,
 		categoryId: number,
 		configId: number
@@ -24,9 +24,7 @@ export class StegElectronics implements ISearchSubService {
 		const data = new Array<IProduct>();
 
 		let document = new DOMParser().parseFromString(
-			await (
-				await fetch(`https://www.steg-electronics.ch/de/search?suche=${searchTerm}&categoryId=${productType}`)
-			).text(),
+			await (await fetch(this.getUrl(searchTerm, categoryIdentifier))).text(),
 			"text/html"
 		);
 
@@ -36,9 +34,7 @@ export class StegElectronics implements ISearchSubService {
 
 		for (let i = 1; i <= lastPage; i++) {
 			document = new DOMParser().parseFromString(
-				await (
-					await fetch(`https://www.steg-electronics.ch/de/search?suche=${searchTerm}&categoryId=${productType}&p=${i}`)
-				).text(),
+				await (await fetch(this.getUrl(searchTerm, categoryIdentifier) + `&p=${i}`)).text(),
 				"text/html"
 			);
 
@@ -82,5 +78,9 @@ export class StegElectronics implements ISearchSubService {
 		}
 
 		return data;
+	}
+
+	getUrl(searchTerm: string, categoryIdentifier: string) {
+		return `https://www.steg-electronics.ch/de/search?suche=${searchTerm}&categoryId=${categoryIdentifier}`;
 	}
 }
