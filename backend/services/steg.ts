@@ -42,7 +42,11 @@ export class StegElectronics implements ISearchSubService {
 			if (productGridElements) {
 				for (const productGridElement of productGridElements) {
 					const text = productGridElement.getElementsByTagName("h2")?.[0].children[0];
-					if (!text.innerText.toLowerCase().includes(searchTerm.toLowerCase())) continue;
+					if (
+						!text.innerText.toLowerCase().includes(searchTerm.toLowerCase()) ||
+						text.innerText.toLowerCase().includes("retoure")
+					)
+						continue;
 
 					const product = {} as IProduct;
 
@@ -56,8 +60,6 @@ export class StegElectronics implements ISearchSubService {
 						productGridElement.getElementsByClassName("rating")?.[0]?.getElementsByClassName("fa")?.length || null;
 
 					product.product_name = text.innerText.replace(text.children[0].textContent, "") as string;
-
-					if (product.product_name.toLowerCase().includes("retoure")) continue;
 
 					if (product.product_name.includes("-"))
 						product.product_name =
