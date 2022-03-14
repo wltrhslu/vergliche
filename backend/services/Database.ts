@@ -202,6 +202,7 @@ export class DatabaseService {
 				price: product.price,
 				availability: product.availability,
 				product_url: product.url,
+				vendor_id: product.vendor_id,
 			});
 			return;
 		}
