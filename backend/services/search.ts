@@ -71,15 +71,16 @@ export default class SearchService {
 		if (lastInsertId) cheapestProduct = await DatabaseService.getCheapestProduct(lastInsertId);
 
 		if (cheapestProduct) {
-			try {
-				this.sseTargets
-					.filter((target) => (target.configId = configId))
-					.map((target) => {
+			this.sseTargets
+				.filter((target) => (target.configId = configId))
+				.map((target) => {
+					try {
 						target.target.dispatchMessage(cheapestProduct);
-					});
-			} catch (error) {
-				console.log(error);
-			}
+					} catch (error) {
+						this.sseTargets.filter((sseTarget) => sseTarget !== target);
+						console.log(error);
+					}
+				});
 		}
 	}
 }
