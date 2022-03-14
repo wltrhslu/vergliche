@@ -191,7 +191,7 @@ export class DatabaseService {
 
 		similarProducts = similarProducts.filter((similarProduct: IProduct) => {
 			if (similarProduct.configId !== product.config_id) return false;
-			if (similarProduct.product_name == product.product_name) return true;
+			if (similarProduct.product_name.replace(" ", "") == product.product_name.replace(" ", "")) return true;
 			return false;
 		}) as IProduct[];
 
