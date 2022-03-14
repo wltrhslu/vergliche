@@ -4,10 +4,10 @@ import { IProduct } from "../interfaces/database.ts";
 import { DatabaseService } from "./Database.ts";
 
 export class Alternate implements ISearchSubService {
+	pageSize = 24;
 	availabilites = {
-		"availability-5": "ONEDAY",
-		"availability-16": "WITHIN4DAYS",
-		"availability-19": "WITHIN7DAYS",
+		"#009824": "ONEDAY",
+		"#e4a100": "WITHIN7DAYS",
 	} as any;
 
 	getServiceName() {
@@ -28,62 +28,64 @@ export class Alternate implements ISearchSubService {
 			"text/html"
 		);
 
-		console.log(document?.body.innerHTML);
-
-		const url = this.getUrl(searchTerm, categoryIdentifier);
-
-		const lastPage = parseInt(
+		const maxProducts = parseInt(
 			document
-				?.getElementById("pagination")
-				?.getElementsByClassName("current-pages")
-				?.pop()
-				?.getAttribute("data-page") || "1"
+				?.getElementsByClassName("shown-products-count-bottom")[0]
+				.parentElement?.lastChild.textContent.trim()
+				.split(" ")[1] || "24"
 		);
 
-		const test = document?.getElementById("pagination");
-
-		for (let i = 1; i <= lastPage; i++) {
+		if (maxProducts > this.pageSize)
 			document = new DOMParser().parseFromString(
-				await (await fetch(this.getUrl(searchTerm, categoryIdentifier) + `&p=${i}`)).text(),
+				await (
+					await fetch(
+						this.getUrl(searchTerm, categoryIdentifier) + `&lpf=${Math.floor(maxProducts / this.pageSize) + 1}`
+					)
+				).text(),
 				"text/html"
 			);
 
-			const productGridElements = document?.getElementsByClassName("product-element");
-			if (productGridElements) {
-				for (const productGridElement of productGridElements) {
-					const text = productGridElement.getElementsByTagName("h3")?.[0].children[0];
-					if (!text.innerText.toLowerCase().includes(searchTerm.toLowerCase())) continue;
+		const productBoxes = document?.getElementsByClassName("productBox");
+		if (productBoxes?.length) {
+			for (const productBox of productBoxes) {
+				const text = productBox.getElementsByClassName("product-name")?.[0];
+				if (
+					!text.innerText.toLowerCase().includes(searchTerm.toLowerCase()) ||
+					text.innerText.toLowerCase().includes("retoure")
+				)
+					continue;
 
-					const product = {} as IProduct;
+				const product = {} as IProduct;
 
-					product.ignore_cheapest = 0;
-					product.vendor_id = vendorId;
-					product.categoryId = categoryId;
-					product.config_id = configId;
-					product.product_url = productGridElement.getElementsByClassName("link-detail")?.[0]?.getAttribute("href");
-					product.brand_id = await DatabaseService.getBrandId(text.children[0].textContent);
-					product.rating = null;
+				product.ignore_cheapest = 0;
+				product.vendor_id = vendorId;
+				product.categoryId = categoryId;
+				product.config_id = configId;
+				product.product_url = productBox.getAttribute("href");
+				product.brand_id = await DatabaseService.getBrandId(text.children[0].textContent);
+				product.rating =
+					productBox.getElementsByClassName("ratingstars")?.[0]?.getElementsByClassName("fas").length || null;
 
-					product.product_name = text.innerText.replace(text.children[0].textContent, "") as string;
+				product.product_name = text.innerText.replace(text.children[0].textContent, "") as string;
 
-					if (product.product_name.toLowerCase().includes("retoure")) continue;
+				if (product.product_name.includes("-"))
+					product.product_name =
+						product.product_name.slice(0, product.product_name.indexOf("-")).trim() +
+						" " +
+						product.product_name.slice(product.product_name.indexOf("-") + 1).trim();
 
-					if (product.product_name.includes("-"))
-						product.product_name =
-							product.product_name.slice(0, product.product_name.indexOf("-")).trim() +
-							" " +
-							product.product_name.slice(product.product_name.indexOf("-") + 1).trim();
+				product.product_name = product.product_name.replace(", Grafikkarte", "");
 
-					product.price =
-						productGridElement.getElementsByClassName("price")?.[0].innerText.trim().replace("'", "") || null;
+				product.price =
+					parseFloat(productBox.getElementsByClassName("price")?.[0].innerText.trim().split(" ")[1].replace(".", "")) +
+						15 || null;
 
-					const availabilityIcon = productGridElement.getElementsByClassName("productAvailability")?.[0];
-					const availabilityClass =
-						availabilityIcon.className.split(",").find((className) => className.includes("-")) || "";
-					product.availability = this.availabilites[availabilityClass] || null;
+				const availabilityIcon = productBox.getElementsByClassName("delivery-info")?.[0].children[0]?.outerHTML;
+				const color = availabilityIcon.slice(availabilityIcon.indexOf("#"), availabilityIcon.indexOf("#") + 7);
+				product.availability = this.availabilites[color] || null;
+				product.availability = this.availabilites[color] || null;
 
-					data.push(product);
-				}
+				data.push(product);
 			}
 		}
 
