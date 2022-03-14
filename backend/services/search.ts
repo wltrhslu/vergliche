@@ -1,16 +1,17 @@
-import { Digitec } from "./digitec.ts";
-import { StegElectronics } from "./steg.ts";
 import { cron } from "https://deno.land/x/deno_cron@v1.0.0/cron.ts";
+import { ServerSentEventTarget } from "https://deno.land/x/oak@v10.2.1/server_sent_event.ts";
 import { DatabaseService } from "./Database.ts";
 import { ISearchSubService } from "../interfaces/search.ts";
-import { ServerSentEventTarget } from "https://deno.land/x/oak@v10.2.1/server_sent_event.ts";
+import { Digitec } from "./digitec.ts";
+import { StegElectronics } from "./steg.ts";
+import { Alternate } from "./alternate.ts";
 
 export default class SearchService {
 	searchServices: ISearchSubService[];
 	sseTargets: { configId: number; target: ServerSentEventTarget }[];
 
 	constructor() {
-		this.searchServices = [new Digitec(), new StegElectronics()];
+		this.searchServices = [new Digitec(), new StegElectronics(), new Alternate()];
 		this.sseTargets = new Array<{ configId: number; target: ServerSentEventTarget }>();
 	}
 
