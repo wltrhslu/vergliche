@@ -59,7 +59,10 @@ export class StegElectronics implements ISearchSubService {
 					product.rating =
 						productGridElement.getElementsByClassName("rating")?.[0]?.getElementsByClassName("fa")?.length || null;
 
-					product.product_name = text.innerText.replace(text.children[0].textContent, "");
+					product.product_name = text.innerText.replace(text.children[0].textContent, "") as string;
+
+					if (product.product_name.toLowerCase().includes("retoure")) continue;
+
 					if (product.product_name.includes("-"))
 						product.product_name =
 							product.product_name.slice(0, product.product_name.indexOf("-")).trim() +
