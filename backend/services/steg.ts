@@ -34,7 +34,7 @@ export class StegElectronics implements ISearchSubService {
 			document?.getElementById("pagination")?.getElementsByTagName("div")?.[0]?.lastElementChild?.innerHTML || "1"
 		);
 
-		for (let i = 1; i < lastPage; i++) {
+		for (let i = 1; i <= lastPage; i++) {
 			document = new DOMParser().parseFromString(
 				await (
 					await fetch(`https://www.steg-electronics.ch/de/search?suche=${searchTerm}&categoryId=${productType}&p=${i}`)
@@ -46,7 +46,7 @@ export class StegElectronics implements ISearchSubService {
 			if (productGridElements) {
 				for (const productGridElement of productGridElements) {
 					const text = productGridElement.getElementsByTagName("h2")?.[0].children[0];
-					if (!text.innerText.includes(searchTerm)) continue;
+					if (!text.innerText.toLowerCase().includes(searchTerm.toLowerCase())) continue;
 
 					const product = {} as IProduct;
 
