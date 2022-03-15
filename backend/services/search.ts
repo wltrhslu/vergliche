@@ -5,6 +5,7 @@ import { ISearchSubService } from "../interfaces/search.ts";
 import { Digitec } from "./digitec.ts";
 import { StegElectronics } from "./steg.ts";
 import { Alternate } from "./alternate.ts";
+import { Model } from "https://deno.land/x/denodb@v1.0.40/mod.ts";
 
 export default class SearchService {
 	searchServices: ISearchSubService[];
@@ -68,7 +69,7 @@ export default class SearchService {
 			console.log(error);
 		}
 
-		let cheapestProduct: null | any = null;
+		let cheapestProduct: null | Model = null;
 		if (lastInsertId) cheapestProduct = await DatabaseService.getCheapestProduct(lastInsertId);
 
 		if (cheapestProduct) {

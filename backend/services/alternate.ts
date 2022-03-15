@@ -5,10 +5,10 @@ import { DatabaseService } from "./Database.ts";
 
 export class Alternate implements ISearchSubService {
 	pageSize = 24;
-	availabilites = {
+	availabilites: { [key: string]: string } = {
 		"#009824": "ONEDAY",
 		"#e4a100": "WITHIN7DAYS",
-	} as any;
+	};
 
 	getServiceName() {
 		return this.constructor.name;

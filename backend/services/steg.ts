@@ -4,11 +4,11 @@ import { IProduct } from "../interfaces/database.ts";
 import { DatabaseService } from "./Database.ts";
 
 export class StegElectronics implements ISearchSubService {
-	availabilites = {
+	availabilites: { [key: string]: string } = {
 		"#228B22": "ONEDAY",
 		"#9ACD32": "WITHIN4DAYS",
 		"#F2C902": "WITHIN7DAYS",
-	} as any;
+	};
 
 	getServiceName() {
 		return this.constructor.name;
