@@ -1,18 +1,19 @@
 import { cron } from "https://deno.land/x/deno_cron@v1.0.0/cron.ts";
 import { ServerSentEventTarget } from "https://deno.land/x/oak@v10.2.1/server_sent_event.ts";
-import { DatabaseService } from "./Database.ts";
+import { Model } from "https://deno.land/x/denodb@v1.0.40/mod.ts";
 import { ISearchSubService } from "../interfaces/search.ts";
+import { DatabaseService } from "./Database.ts";
 import { Digitec } from "./digitec.ts";
 import { StegElectronics } from "./steg.ts";
 import { Alternate } from "./alternate.ts";
-import { Model } from "https://deno.land/x/denodb@v1.0.40/mod.ts";
+import { Brack } from "./brack.ts";
 
 export default class SearchService {
 	searchServices: ISearchSubService[];
 	sseTargets: { configId: number; target: ServerSentEventTarget }[];
 
 	constructor() {
-		this.searchServices = [new Digitec(), new StegElectronics(), new Alternate()];
+		this.searchServices = [new Digitec(), new StegElectronics(), new Alternate(), new Brack()];
 		this.sseTargets = new Array<{ configId: number; target: ServerSentEventTarget }>();
 	}
 
@@ -43,13 +44,7 @@ export default class SearchService {
 			if (!config.selected_vendors.includes(vendorId)) continue;
 			const vendorCategoryIdentifier = await DatabaseService.getVendorCategoryIdentifier(vendorId, config.category_id);
 
-			const products = await service.searchProducts(
-				config.search_term,
-				vendorCategoryIdentifier,
-				vendorId,
-				config.category_id,
-				configId
-			);
+			const products = await service.searchProducts(config.search_term, vendorCategoryIdentifier, vendorId, config.category_id, configId);
 
 			for (const product of products) {
 				await DatabaseService.addOrUpdateProduct(product);

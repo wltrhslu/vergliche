@@ -23,10 +23,7 @@ export class Brack implements ISearchSubService {
 	): Promise<IProduct[]> {
 		const data = new Array<IProduct>();
 
-		const document = new DOMParser().parseFromString(
-			await (await fetch(this.getUrl(searchTerm, categoryIdentifier))).text(),
-			"text/html"
-		);
+		const document = new DOMParser().parseFromString(await (await fetch(this.getUrl(searchTerm, categoryIdentifier))).text(), "text/html");
 
 		const productCards = document?.getElementsByClassName("product-card");
 		if (productCards?.length) {
@@ -37,22 +34,19 @@ export class Brack implements ISearchSubService {
 				product.vendor_id = vendorId;
 				product.categoryId = categoryId;
 				product.config_id = configId;
-				product.product_url =
-					"https://brack.ch/" + productCard.getElementsByClassName("product__overlayLink")?.[0]?.getAttribute("href");
+				product.product_url = "https://brack.ch/" + productCard.getElementsByClassName("product__overlayLink")?.[0]?.getAttribute("href");
 				product.brand_id = await DatabaseService.getBrandId(
 					productCard.getElementsByClassName("productList__itemManufacturer")?.[0]?.textContent
 				);
-				product.rating =
-					productCard.getElementsByClassName("ratingstars")?.[0]?.getElementsByClassName("fas").length || null;
+				product.rating = productCard.getElementsByClassName("ratingStars")?.[0]?.getAttribute("data-rating") || null;
 
 				product.product_name = productCard
 					.getElementsByClassName("productList__itemTitle")?.[0]
 					?.textContent?.replace("Grafikkarte", "")
 					.trim();
-				if (!product.product_name.includes(searchTerm.toLowerCase())) continue;
+				if (!product.product_name.toLowerCase().replace(" ", "").includes(searchTerm.toLowerCase().replace(" ", ""))) continue;
 
-				product.price =
-					productCard.getElementsByClassName("js-currentPriceValue")?.[0]?.getAttribute("content") || null;
+				product.price = productCard.getElementsByClassName("js-currentPriceValue")?.[0]?.getAttribute("content") || null;
 
 				const currentState = productCard.getAttribute("data-current-state") || "";
 				product.availability = this.availabilites[currentState] || null;
