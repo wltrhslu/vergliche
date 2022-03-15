@@ -30,8 +30,8 @@ export class Alternate implements ISearchSubService {
 
 		const maxProducts = parseInt(
 			document
-				?.getElementsByClassName("shown-products-count-bottom")[0]
-				.parentElement?.lastChild.textContent.trim()
+				?.getElementsByClassName("shown-products-count-bottom")?.[0]
+				?.parentElement?.lastChild.textContent.trim()
 				.split(" ")[1] || "24"
 		);
 
