@@ -48,9 +48,7 @@ export class DatabaseService {
 	}
 
 	static async getCategoryId(categoryName: string): Promise<number> {
-		const category = (await Category.select("id").where("category_name", categoryName).get()) as unknown as [
-			{ id: number }
-		];
+		const category = (await Category.select("id").where("category_name", categoryName).get()) as unknown as [{ id: number }];
 
 		if (category.length != 1) throw new RangeError("either no or multiple product categorys found");
 
@@ -62,9 +60,7 @@ export class DatabaseService {
 			.where("vendor_id", vendorId)
 			.get()) as unknown as [{ vendor_category_identifier: string; categoryId: number }];
 
-		const vendorCategoriesFiltered = vendorCategories.filter(
-			(vendorCategory) => vendorCategory.categoryId == categoryId
-		);
+		const vendorCategoriesFiltered = vendorCategories.filter((vendorCategory) => vendorCategory.categoryId == categoryId);
 
 		if (!vendorCategoriesFiltered.length || vendorCategoriesFiltered.length > 1)
 			throw new RangeError("either no or multiple vendor categorys found");
@@ -146,15 +142,12 @@ export class DatabaseService {
 		const products = (await Product.where("config_id", configId)
 			.orderBy("price")
 			.select("id", "price", "availability", "updated_at", "ignore_cheapest")
-			.get()) as unknown as [
-			{ id: number; price: string; availability: string | null; updatedAt: string; ignore_cheapest: number }
-		];
+			.get()) as unknown as [{ id: number; price: string; availability: string | null; updatedAt: string; ignore_cheapest: number }];
 
 		if (!products.length) throw new RangeError(`No Products found with configId: ${configId}`);
 
-		const search_frequency = (
-			(await Config.select("search_frequency").find(configId)) as unknown as { search_frequency: string }
-		).search_frequency;
+		const search_frequency = ((await Config.select("search_frequency").find(configId)) as unknown as { search_frequency: string })
+			.search_frequency;
 		const minutes = search_frequency.split(":")[1];
 
 		const created_at = new Date();

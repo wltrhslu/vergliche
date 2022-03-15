@@ -132,8 +132,7 @@ export class Digitec implements ISearchSubService {
 		product.availability = null;
 
 		for (const offer of data.offers) {
-			if (!offer.canAddToBasket || offer.type != "RETAIL" || (product.price && offer.price.amountIncl > product.price))
-				continue;
+			if (!offer.canAddToBasket || offer.type != "RETAIL" || (product.price && offer.price.amountIncl > product.price)) continue;
 
 			product.price = offer.price.amountIncl;
 			product.availability = offer.deliveryOptions?.mail?.classification;

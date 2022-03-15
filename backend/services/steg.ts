@@ -23,14 +23,9 @@ export class StegElectronics implements ISearchSubService {
 	): Promise<IProduct[]> {
 		const data = new Array<IProduct>();
 
-		let document = new DOMParser().parseFromString(
-			await (await fetch(this.getUrl(searchTerm, categoryIdentifier))).text(),
-			"text/html"
-		);
+		let document = new DOMParser().parseFromString(await (await fetch(this.getUrl(searchTerm, categoryIdentifier))).text(), "text/html");
 
-		const lastPage = parseInt(
-			document?.getElementById("pagination")?.getElementsByTagName("div")?.[0]?.lastElementChild?.innerHTML || "1"
-		);
+		const lastPage = parseInt(document?.getElementById("pagination")?.getElementsByTagName("div")?.[0]?.lastElementChild?.innerHTML || "1");
 
 		for (let i = 1; i <= lastPage; i++) {
 			document = new DOMParser().parseFromString(
@@ -42,10 +37,7 @@ export class StegElectronics implements ISearchSubService {
 			if (productGridElements) {
 				for (const productGridElement of productGridElements) {
 					const text = productGridElement.getElementsByTagName("h2")?.[0].children[0];
-					if (
-						!text.innerText.toLowerCase().includes(searchTerm.toLowerCase()) ||
-						text.innerText.toLowerCase().includes("retoure")
-					)
+					if (!text.innerText.toLowerCase().includes(searchTerm.toLowerCase()) || text.innerText.toLowerCase().includes("retoure"))
 						continue;
 
 					const product = {} as IProduct;
@@ -56,8 +48,7 @@ export class StegElectronics implements ISearchSubService {
 					product.config_id = configId;
 					product.product_url = productGridElement.getElementsByClassName("listItemImage")?.[0]?.getAttribute("href");
 					product.brand_id = await DatabaseService.getBrandId(text.children[0].textContent);
-					product.rating =
-						productGridElement.getElementsByClassName("rating")?.[0]?.getElementsByClassName("fa")?.length || null;
+					product.rating = productGridElement.getElementsByClassName("rating")?.[0]?.getElementsByClassName("fa")?.length || null;
 
 					product.product_name = text.innerText.replace(text.children[0].textContent, "") as string;
 
@@ -67,8 +58,7 @@ export class StegElectronics implements ISearchSubService {
 							" " +
 							product.product_name.slice(product.product_name.indexOf("-") + 1).trim();
 
-					product.price =
-						productGridElement.getElementsByClassName("generalPrice")?.[0].innerText.trim().replace("'", "") || null;
+					product.price = productGridElement.getElementsByClassName("generalPrice")?.[0].innerText.trim().replace("'", "") || null;
 
 					const availabilityIcon = productGridElement.getElementsByClassName("iconShipment")?.[0]?.outerHTML;
 					const color = availabilityIcon.slice(availabilityIcon.indexOf("#"), availabilityIcon.indexOf("#") + 7);

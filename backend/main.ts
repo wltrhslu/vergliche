@@ -1,11 +1,6 @@
 import { DatabaseService } from "./services/Database.ts";
 
-const db = new DatabaseService(
-	Deno.cwd() === "/" ? "vergliche" : "vergliche_dev",
-	"wltr.internet-box.ch",
-	"root",
-	"Welcome01"
-);
+const db = new DatabaseService(Deno.cwd() === "/" ? "vergliche" : "vergliche_dev", "wltr.internet-box.ch", "root", "Welcome01");
 await db.initDatabase();
 
 import { Application, Router, send } from "https://deno.land/x/oak@v10.4.0/mod.ts";
