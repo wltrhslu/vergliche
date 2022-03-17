@@ -1,21 +1,14 @@
 import React, { Dispatch, SetStateAction, useContext, useEffect, useState } from "react";
 import { FC } from "react";
 import { VendorContext } from "../App";
+import { CategoryContext } from "../App";
 import { ICategory, IConfig } from "../interfaces/config";
 import { serverUrl } from "../helpers/serverUrl";
 
 const ConfigForm: FC<{ initialConfig: IConfig | null; onSubmit: Function; visible: boolean }> = (props) => {
 	const vendors = useContext(VendorContext);
+	const categories = useContext(CategoryContext);
 	const [config, setConfig] = useState(props.initialConfig ? Object.assign(props.initialConfig) : ({} as IConfig));
-	const [categories, setCategories] = useState(new Array<ICategory>());
-
-	useEffect(() => {
-		const getCategories = async () => {
-			setCategories((await (await fetch(`${serverUrl}/category`)).json()) as ICategory[]);
-		};
-
-		getCategories();
-	}, []);
 
 	const handleCheckbox = (vendorId: number) => {
 		const newSelectedVendors = config.selected_vendors ? [config.selected_vendors] : [];
@@ -39,10 +32,7 @@ const ConfigForm: FC<{ initialConfig: IConfig | null; onSubmit: Function; visibl
 	};
 
 	return (
-		<form
-			className={props.visible ? "form form-config" : "form form-config hidden"}
-			onSubmit={(event) => onFormSubmit(event)}
-		>
+		<form className={props.visible ? "form form-config" : "form form-config hidden"} onSubmit={(event) => onFormSubmit(event)}>
 			<fieldset>
 				<label htmlFor="search_term">Searchterm</label>
 				<input
