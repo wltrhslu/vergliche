@@ -3,7 +3,8 @@ body {
 }
 
 .App {
-	grid-template-rows: auto 1fr;
+	display: flex;
+	flex-direction: column;
 	min-height: 100vh;
 }
 
@@ -13,10 +14,6 @@ body {
 	display: grid;
 	grid-template-columns: 1fr auto auto;
 	padding: 0.5em;
-}
-
-.App > span {
-	grid-area: heading;
 }
 
 .app-body {
