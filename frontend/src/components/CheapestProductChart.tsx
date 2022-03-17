@@ -1,21 +1,10 @@
 import { useEffect, useState, FC } from "react";
-import { IConfig, IProduct } from "../interfaces/config";
-import {
-	Chart as ChartJS,
-	CategoryScale,
-	LinearScale,
-	PointElement,
-	LineElement,
-	Title,
-	Tooltip,
-	Legend,
-	TimeScale,
-} from "chart.js";
+import { IProduct } from "../interfaces/config";
+import { Chart as ChartJS, CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend, TimeScale } from "chart.js";
 import Zoom from "chartjs-plugin-zoom";
 import "chartjs-adapter-date-fns";
 import { Line } from "react-chartjs-2";
 import { serverUrl } from "../helpers/serverUrl";
-import { externalTooltipHandler } from "../helpers/customTooltip";
 
 ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend, TimeScale, Zoom);
 
@@ -52,9 +41,14 @@ const CheapestProductChart: FC<{ configId: number }> = (props) => {
 				display: false,
 			},
 			tooltip: {
-				enabled: false,
-				position: "nearest",
-				external: externalTooltipHandler,
+				displayColors: false,
+				callbacks: {
+					title: (context: any) => context[0].raw.brandName,
+					afterTitle: (context: any) => context[0].raw.productName,
+					label: (context: any) => context.raw.current_price,
+					beforeFooter: (context: any) => context[0].raw.created_at.toLocaleString(),
+					footer: (context: any) => context[0].raw.vendorName,
+				},
 			},
 			zoom: {
 				pan: {
@@ -63,6 +57,9 @@ const CheapestProductChart: FC<{ configId: number }> = (props) => {
 				},
 				zoom: {
 					wheel: {
+						enabled: true,
+					},
+					touch: {
 						enabled: true,
 					},
 					mode: "x",
@@ -74,13 +71,15 @@ const CheapestProductChart: FC<{ configId: number }> = (props) => {
 			yAxisKey: "current_price",
 		},
 		responsive: true,
+		onClick: function (event: any, element: any) {
+			const product: IProduct = element[0].element.$context.raw;
+			window.open(product.productUrl, "_blank");
+		},
 	};
 
 	useEffect(() => {
 		const getData = async () => {
-			const cheapestProducts = (await (
-				await fetch(`${serverUrl}/cheapest-products/${props.configId}`)
-			).json()) as IProduct[];
+			const cheapestProducts = (await (await fetch(`${serverUrl}/cheapest-products/${props.configId}`)).json()) as IProduct[];
 
 			const data = cheapestProducts.map((product) => {
 				return {
@@ -114,9 +113,12 @@ const CheapestProductChart: FC<{ configId: number }> = (props) => {
 		getData();
 	}, []);
 
-	if (chartData?.datasets?.length)
-		return <Line datasetIdKey={props.configId.toString()} data={chartData} options={options}></Line>;
+	if (chartData?.datasets?.length) return <Line datasetIdKey={props.configId.toString()} data={chartData} options={options}></Line>;
 	return <span></span>;
+};
+
+const getTooltipLabel = (product: IProduct) => {
+	return `${product.created_at.toLocaleString()}\n${product.vendorName}\n${product.current_price}`;
 };
 
 export default CheapestProductChart;
